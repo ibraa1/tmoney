@@ -1,38 +1,5 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>TMoney Project</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.5;
-        }
-    h1 {
-        font-size: 24px;
-        margin-bottom: 20px;
-    }
 
-    h2 {
-        font-size: 20px;
-        margin-bottom: 10px;
-    }
-
-    p {
-        margin-bottom: 10px;
-    }
-
-    ul {
-        margin: 0;
-        padding-left: 20px;
-    }
-
-    li {
-        margin-bottom: 5px;
-    }
-</style>
-</head>
-<body>
-    <h1>TMoney Project</h1>
+<h1>TMoney Project</h1>
 <h2>Fonctionnalités</h2>
 <ul>
     <li>Transfert d'argent entre utilisateurs</li>
@@ -82,11 +49,10 @@
 
 <h2>Auteurs</h2>
 <ul>
-    <li>Votre Nom (@votre-utilisateur)</li>
-    <li>Autre Contributeur (@autre-contributeur)</li>
+    <li>Ibrahima douty oularé (@ibraa1)</li>
+    <li>Thierno abdoulaye baldé</li>
 </ul>
 
 <h2>Licence</h2>
 <p>Ce projet est sous licence MIT. Voir le fichier <code>LICENSE</code> pour plus de détails.</p>
-</body>
-</html>
+
