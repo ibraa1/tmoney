@@ -13,9 +13,9 @@
 
 <h2>Prérequis</h2>
 <ul>
-    <li>PHP 7.4 ou version supérieure</li>
+    <li>PHP 8.1 ou version supérieure</li>
     <li>Composer</li>
-    <li>Laravel 8.x</li>
+    <li>Laravel 9.x</li>
     <li>MySQL 5.7 ou version supérieure</li>
 </ul>
 
