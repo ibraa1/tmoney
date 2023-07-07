@@ -1,49 +1,92 @@
-TMoney Project
-Ce projet TMoney est une application de gestion de transactions financières en ligne. Il permet aux utilisateurs de réaliser des transferts d'argent, des retraits et des dépôts.
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TMoney Project</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.5;
+        }
+    h1 {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
 
-Fonctionnalités
-Transfert d'argent entre utilisateurs
-Retrait d'argent dans des points de service
-Dépôt d'argent sur le compte utilisateur
-Gestion des devises et des taux de change
-Gestion des utilisateurs et de leurs rôles
-Suivi des transactions effectuées
-Calcul des commissions sur les transactions
-Prérequis
-Avant de pouvoir exécuter l'application TMoney, assurez-vous d'avoir installé les éléments suivants :
+    h2 {
+        font-size: 20px;
+        margin-bottom: 10px;
+    }
 
-PHP 7.4 ou version supérieure
-Composer
-Laravel 8.x
-MySQL 5.7 ou version supérieure
-Installation
-Clonez le projet à partir du dépôt Git :
-git clone https://github.com/votre-utilisateur/tmoney.git
-Accédez au répertoire du projet :
-cd tmoney
-Installez les dépendances du projet à l'aide de Composer :
-composer install
+    p {
+        margin-bottom: 10px;
+    }
 
-Dupliquez le fichier .env.example et renommez-le en .env. Modifiez les informations de connexion à la base de données dans ce fichier en fonction de votre environnement.
+    ul {
+        margin: 0;
+        padding-left: 20px;
+    }
 
-Générez la clé d'application Laravel :
-php artisan key:generate
-Exécutez les migrations de la base de données et les seeders :
-php artisan migrate --seed
-Démarrez le serveur de développement :
-php artisan serve
-Accédez à l'application dans votre navigateur à l'adresse http://localhost:8000.
-Contribution
-Si vous souhaitez contribuer à ce projet, vous pouvez suivre ces étapes :
+    li {
+        margin-bottom: 5px;
+    }
+</style>
+</head>
+<body>
+    <h1>TMoney Project</h1>
+<h2>Fonctionnalités</h2>
+<ul>
+    <li>Transfert d'argent entre utilisateurs</li>
+    <li>Retrait d'argent dans des points de service</li>
+    <li>Dépôt d'argent sur le compte utilisateur</li>
+    <li>Gestion des devises et des taux de change</li>
+    <li>Gestion des utilisateurs et de leurs rôles</li>
+    <li>Suivi des transactions effectuées</li>
+    <li>Calcul des commissions sur les transactions</li>
+</ul>
 
-Fork le projet depuis le dépôt Git.
-Clonez votre fork vers votre machine locale.
-Créez une branche pour vos modifications.
-Effectuez les modifications et ajoutez-les.
-Envoyez vos modifications vers votre fork.
-Ouvrez une Pull Request dans le dépôt d'origine.
-Auteurs
-Votre Nom (@ibraa1)
-Autre Contributeur (@thierno)
-Licence
-Ce projet est sous licence MIT. Voir le fichier LICENSE pour plus de détails.
+<h2>Prérequis</h2>
+<ul>
+    <li>PHP 7.4 ou version supérieure</li>
+    <li>Composer</li>
+    <li>Laravel 8.x</li>
+    <li>MySQL 5.7 ou version supérieure</li>
+</ul>
+
+<h2>Installation</h2>
+<ol>
+    <li>Clonez le projet à partir du dépôt Git :</li>
+    <code>git clone https://github.com/votre-utilisateur/tmoney.git</code>
+    <li>Accédez au répertoire du projet :</li>
+    <code>cd tmoney</code>
+    <li>Installez les dépendances du projet à l'aide de Composer :</li>
+    <code>composer install</code>
+    <li>Dupliquez le fichier <code>.env.example</code> et renommez-le en <code>.env</code>. Modifiez les informations de connexion à la base de données dans ce fichier en fonction de votre environnement.</li>
+    <li>Générez la clé d'application Laravel :</li>
+    <code>php artisan key:generate</code>
+    <li>Exécutez les migrations de la base de données et les seeders :</li>
+    <code>php artisan migrate --seed</code>
+    <li>Démarrez le serveur de développement :</li>
+    <code>php artisan serve</code>
+    <li>Accédez à l'application dans votre navigateur à l'adresse <code>http://localhost:8000</code>.</li>
+</ol>
+
+<h2>Contribution</h2>
+<ol>
+    <li>Fork le projet depuis le dépôt Git.</li>
+    <li>Clonez votre fork vers votre machine locale.</li>
+    <li>Créez une branche pour vos modifications.</li>
+    <li>Effectuez les modifications et ajoutez-les.</li>
+    <li>Envoyez vos modifications vers votre fork.</li>
+    <li>Ouvrez une Pull Request dans le dépôt d'origine.</li>
+</ol>
+
+<h2>Auteurs</h2>
+<ul>
+    <li>Votre Nom (@votre-utilisateur)</li>
+    <li>Autre Contributeur (@autre-contributeur)</li>
+</ul>
+
+<h2>Licence</h2>
+<p>Ce projet est sous licence MIT. Voir le fichier <code>LICENSE</code> pour plus de détails.</p>
+</body>
+</html>
