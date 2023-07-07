@@ -166,7 +166,8 @@
                                     <!-- form column -->
                                     <div class="col-md-9 mb-3">
                                         <select name="role" id="bss3" data-toggle="selectpicker"
-                                            data-live-search="true" data-width="100%">
+                                            data-live-search="true" data-width="100%"
+                                            @if (auth()->user()->role == 'client') disabled @endif>
                                             <option value="">Sélectionner un rôle</option>
                                             <option value="agent" {{ $user->role === 'agent' ? 'selected' : '' }}>Agent
                                             </option>
