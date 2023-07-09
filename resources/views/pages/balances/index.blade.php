@@ -102,7 +102,7 @@
                                 <td>{{ $balance->montantTotalComission }}
                                     {{ $balance->detailBalance->devise->deviseEntree }}</td>
                                 <td>
-                                    @if (Auth::user()->role == 'admin')
+                                    @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superAdmin')
                                         <div class="d-flex justify-content-between">
                                             @if ($balance->deleted_at)
                                             @else

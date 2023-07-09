@@ -7,6 +7,7 @@ use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CompenseController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DeviseController;
+use App\Http\Controllers\FactureController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\RetraitController;
@@ -52,12 +53,17 @@ Route::middleware(['auth'])->group(
         Route::delete('transactions/force/{transaction}', [TransactionController::class, 'forceDestroy'])->name('transactions.force.destroy');
         Route::put('transactions/restore/{transaction}', [TransactionController::class, 'restore'])->name('transactions.restore');
 
+        Route::get('transactions/factureTransfert/{transaction}', [FactureController::class, 'factureTransfert'])->name('transactions.factureTransfert');
+        Route::get('transactions/factureRetrait/{transaction}', [FactureController::class, 'factureRetrait'])->name('transactions.factureRetrait');
+
+
         Route::resource('compenses', CompenseController::class);
         Route::delete('compenses/force/{compense}', [CompenseController::class, 'forceDestroy'])->name('compenses.force.destroy');
         Route::put('compenses/restore/{compense}', [CompenseController::class, 'restore'])->name('compenses.restore');
 
         Route::post('compenses/approve/{compense}', [CompenseController::class, 'approve'])->name('compenses.approve');
         Route::post('compenses/reject/{compense}', [CompenseController::class, 'reject'])->name('compenses.reject');
+        Route::get('compenses/facture/{transaction}', [FactureController::class, 'factureCompense'])->name('compenses.facture');
 
 
         Route::get('profile/{user}', [ProfileController::class, 'edit'])->name('profile.edit');

@@ -167,7 +167,7 @@
                                     <div class="col-md-9 mb-3">
                                         <select name="role" id="bss3" data-toggle="selectpicker"
                                             data-live-search="true" data-width="100%"
-                                            @if (auth()->user()->role == 'client') disabled @endif>
+                                            @if (Auth::user()->role == 'agent') disabled @endif>
                                             <option value="">Sélectionner un rôle</option>
                                             <option value="agent" {{ $user->role === 'agent' ? 'selected' : '' }}>Agent
                                             </option>
@@ -175,9 +175,11 @@
                                             </option>
                                             <option value="admin" {{ $user->role === 'admin' ? 'selected' : '' }}>Admin
                                             </option>
-                                            <option value="superAdmin"
-                                                {{ $user->role === 'superAdmin' ? 'selected' : '' }}>
-                                                Super administrateur</option>
+                                            @if (Auth::user()->role == 'superAdmin')
+                                                <option value="superAdmin"
+                                                    {{ $user->role === 'superAdmin' ? 'selected' : '' }}>
+                                                    Super administrateur</option>
+                                            @endif
                                         </select>
                                         @error('role')
                                             <div class="">

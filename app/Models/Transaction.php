@@ -26,10 +26,8 @@ class Transaction extends Model
         'remise',
         'typeRemise',
         'paysId',
-        'montantRecu',
         'clientId',
         'receveurId',
-        'montantEnvoye',
         'creationUserId',
         'modificationUserId'
     ];

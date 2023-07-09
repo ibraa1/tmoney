@@ -43,10 +43,13 @@
             <!-- .card-header -->
             <div class="card-header">
                 <!-- .nav-tabs -->
-                <a href="{{ route('transactions.create') }}"><button type="button" class="btn btn-primary">Faire un
-                        transfert</button></a>
-                <a href="{{ route('retrait') }}"><button type="button" class="btn btn-secondary">Faire un
-                        retrait</button></a>
+                @if (Auth::user()->role !== 'admin' && Auth::user()->role !== 'superAdmin')
+                    <a href="{{ route('transactions.create') }}"><button type="button" class="btn btn-primary">Faire un
+                            transfert</button></a>
+
+                    <a href="{{ route('retrait') }}"><button type="button" class="btn btn-secondary">Faire un
+                            retrait</button></a>
+                @endif
             </div><!-- /.card-header -->
             <!-- .card-body -->
             <div class="card-body">
@@ -124,15 +127,25 @@
                                 @endif
                                 <td>{{ $transaction->date }}</td>
                                 <td>
+                                    @if ($transaction->statut !== 'annulé')
+                                        @if ($transaction->type != 'retrait')
+                                            <a class="btn btn-sm btn-icon btn-secondary"
+                                                href="{{ route('transactions.factureTransfert', $transaction->id) }}">
+                                                <i class="fa fa-print"></i>
+                                            </a>
+                                        @else
+                                            <a class="btn btn-sm btn-icon btn-secondary"
+                                                href="{{ route('transactions.factureRetrait', $transaction->id) }}">
+                                                <i class="fa fa-print"></i>
+                                            </a>
+                                        @endif
+                                    @endif
+
                                     @if (Auth::user()->role == 'admin')
                                         <div class="d-flex justify-content-between">
 
                                             @if ($transaction->deleted_at)
                                             @else
-                                                {{-- <a class="btn btn-sm btn-icon btn-secondary"
-                                                href="{{ route('transactions.edit', $transaction->id) }}">
-                                                <i class="fa fa-pencil-alt"></i>
-                                            </a> --}}
                                                 @if ($transaction->statut == 'en attente')
                                                     <form id=""
                                                         action="{{ route('transactions.cancel', $transaction->id) }}"

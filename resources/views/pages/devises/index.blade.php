@@ -27,7 +27,7 @@
             </ol>
         </nav><!-- /.breadcrumb -->
         <!-- floating action -->
-        @if (Auth::user()->role == 'admin')
+        @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superAdmin')
             <a href="{{ route('devises.create') }}"><button type="button" class="btn btn-success btn-floated"><span
                         class="fa fa-plus"></span></button></a>
         @endif
@@ -43,7 +43,7 @@
         <!-- .card -->
         <div class="card card-fluid">
             <!-- .card-header -->
-            @if (Auth::user()->role == 'admin')
+            @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superAdmin')
                 <div class="card-header">
                     <!-- .nav-tabs -->
                     <a href="{{ route('devises.create') }}"><button type="button" class="btn btn-primary">Ajouter une
@@ -106,7 +106,7 @@
                                 <td>{{ $devise->dateDebut }}</td>
                                 <td>{{ $devise->dateFin }}</td>
                                 <td>
-                                    @if (Auth::user()->role == 'admin')
+                                    @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superAdmin')
                                         <div class="d-flex justify-content-between">
                                             @if ($devise->deleted_at)
                                             @else

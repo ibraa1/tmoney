@@ -158,7 +158,7 @@
                               </ul><!-- /child menu -->
                           </li><!-- /.menu-item -->
                           <!-- .menu-item --> --}}
-                          @if (Auth::user()->role == 'admin')
+                          @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superAdmin')
                               <li class="menu-item">
                                   <a href="{{ route('users.index') }}" class="menu-link"><span
                                           class="menu-icon oi oi-person"></span> <span

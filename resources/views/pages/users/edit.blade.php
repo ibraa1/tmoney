@@ -106,7 +106,7 @@
                                     <label class="control-label" for="bss3">Rôle <abbr title="Required">*</abbr></label>
                                     </label>
                                     <select name="role" id="bss3" data-toggle="selectpicker" data-live-search="true"
-                                        data-width="100%">
+                                        data-width="100%" @if (Auth::user()->role == 'agent') disabled @endif>
                                         <option value="">Sélectionner un rôle</option>
                                         <option value="agent" {{ $user->role === 'agent' ? 'selected' : '' }}>Agent
                                         </option>
@@ -114,8 +114,11 @@
                                         </option>
                                         <option value="admin" {{ $user->role === 'admin' ? 'selected' : '' }}>Admin
                                         </option>
-                                        <option value="superAdmin" {{ $user->role === 'superAdmin' ? 'selected' : '' }}>
-                                            Super administrateur</option>
+                                        @if (Auth::user()->role == 'superAdmin')
+                                            <option value="superAdmin"
+                                                {{ $user->role === 'superAdmin' ? 'selected' : '' }}>
+                                                Super administrateur</option>
+                                        @endif
                                     </select>
 
                                     @error('role')

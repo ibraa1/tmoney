@@ -41,11 +41,13 @@
         <!-- .card -->
         <div class="card card-fluid">
             <!-- .card-header -->
-            <div class="card-header">
-                <!-- .nav-tabs -->
-                <a href="{{ route('compenses.create') }}"><button type="button" class="btn btn-primary">Demander une
-                        compense</button></a>
-            </div><!-- /.card-header -->
+            @if (Auth::user()->role !== 'admin' && Auth::user()->role !== 'superAdmin')
+                <div class="card-header">
+                    <!-- .nav-tabs -->
+                    <a href="{{ route('compenses.create') }}"><button type="button" class="btn btn-primary">Demander une
+                            compense</button></a>
+                </div><!-- /.card-header -->
+            @endif
             <!-- .card-body -->
             <div class="card-body">
                 <!-- .form-group -->
@@ -131,15 +133,12 @@
 
 
 
-                                            {{-- @if ($compense->deleted_at)
-                                        @else
-                                            @if (!$compense->dateFin)
+                                            @if ($compense->statut !== 'réjeté' && $compense->dateApprobation)
                                                 <a class="btn btn-sm btn-icon btn-secondary"
-                                                    href="{{ route('compenses.edit', $compense->id) }}">
-                                                    <i class="fa fa-pencil-alt"></i>
+                                                    href="{{ route('compenses.facture', $compense->id) }}">
+                                                    <i class="fa fa-print"></i>
                                                 </a>
                                             @endif
-                                        @endif --}}
 
                                             @if (!$compense->deleted_at)
                                                 <form id=""

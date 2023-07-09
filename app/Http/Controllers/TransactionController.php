@@ -55,6 +55,7 @@ class TransactionController extends Controller
         $code = mt_rand(100000, 999999);
         $totalCommission = $this->calculateCommission($request->devise, $this->calculateAmount($request->montant, $request->remise, $request->typeRemise));
 
+
         $agentCommission = $totalCommission * 0.4;
         $retraitantCommission = $totalCommission * 0.3;
         $adminCommission = $totalCommission * 0.3;
@@ -199,15 +200,15 @@ class TransactionController extends Controller
         // Vérifier si c'est un transfert national
         if ($devise->deviseEntree == $devise->deviseSortie) {
             // Transfert national, commission de 1% du montant
-            $commission = $montant * 0.01;
+            $commission = ($montant * 0.01);
         } else {
             // Transfert international
             if ($devise->deviseEntree == 'XOF') {
                 // Commission de 200 pour chaque tranche de 5000
-                $commission = floor($montant / 5000) * 200;
+                $commission = floor(($montant / 5000) * 200);
             } else {
                 // Commission de 1% du montant
-                $commission = $montant * 0.01;
+                $commission = ($montant * 0.01);
             }
         }
 

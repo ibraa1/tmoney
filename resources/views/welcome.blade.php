@@ -47,7 +47,7 @@
                             <a href="user-tasks.html" class="metric metric-bordered align-items-center">
                                 <h2 class="metric-label"> Agents </h2>
                                 <p class="metric-value h3">
-                                    <sub><i class="fa fa-tasks"></i></sub> <span class="value">{{$totalAgents}}</span>
+                                    <sub><i class="fa fa-tasks"></i></sub> <span class="value">{{ $totalAgents }}</span>
                                 </p>
                             </a> <!-- /.metric -->
                         </div><!-- /metric column -->
@@ -61,7 +61,7 @@
                                 TRANSACTIONS DU JOUR</span>
                         </div>
                         <p class="metric-value h3">
-                            <sub><i class="oi oi-timer"></i></sub> <span class="value">{{$transactionsToday}}</span>
+                            <sub><i class="oi oi-timer"></i></sub> <span class="value">{{ $transactionsToday }}</span>
                         </p>
                     </a> <!-- /.metric -->
                 </div><!-- /metric column -->

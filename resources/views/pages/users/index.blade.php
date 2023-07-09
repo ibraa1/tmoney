@@ -41,7 +41,7 @@
         <!-- .card -->
         <div class="card card-fluid">
             <!-- .card-header -->
-            @if (Auth::user()->role == 'admin')
+            @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superAdmin')
                 <div class="card-header">
                     <!-- .nav-tabs -->
                     <a href="{{ route('users.create') }}"><button type="button" class="btn btn-primary">Ajouter un
@@ -96,8 +96,8 @@
                         @foreach ($users as $user)
                             <tr>
                                 <td> <a href="#" class="tile tile-img mr-1"> <img class="img-fluid"
-                                            src="{{ asset(Auth::user()->image) }}"
-                                            alt="Card image cap"></a>{{ $user->adresse }}</td>
+                                            src="{{ asset($user->image) }}" alt="Card image cap"></a>{{ $user->adresse }}
+                                </td>
                                 <td>{{ $user->prenom }} {{ $user->nom }}</td>
                                 <td>{{ $user->numero_tel }}</td>
                                 <td>{{ $user->role }}</td>
@@ -108,7 +108,7 @@
 
                                 </td>
                                 <td>
-                                    @if (Auth::user()->role == 'admin')
+                                    @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superAdmin')
                                         <div class="d-flex justify-content-between">
                                             @if ($user->deleted_at)
                                             @else
@@ -123,16 +123,18 @@
                                             @endif
 
                                             @if (!$user->deleted_at)
-                                                <form id="" action="{{ route('users.destroy', $user->id) }}"
-                                                    method="post">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button title="Supprimer"
-                                                        onclick="return confirm('Voulez vous vraiment supprimer cette ligne')"
-                                                        class="btn btn-sm btn-icon btn-secondary" href="#">
-                                                        <i class="far fa-trash-alt"></i>
-                                                    </button>
-                                                </form>
+                                                @if (Auth::user()->role == 'superAdmin')
+                                                    <form id="" action="{{ route('users.destroy', $user->id) }}"
+                                                        method="post">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button title="Supprimer"
+                                                            onclick="return confirm('Voulez vous vraiment supprimer cette ligne')"
+                                                            class="btn btn-sm btn-icon btn-secondary" href="#">
+                                                            <i class="far fa-trash-alt"></i>
+                                                        </button>
+                                                    </form>
+                                                @endif
                                             @else
                                                 <form action="{{ route('users.restore', $user->id) }}" method="post">
                                                     @csrf

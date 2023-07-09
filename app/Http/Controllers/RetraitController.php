@@ -62,6 +62,7 @@ class RetraitController extends Controller
             'agentId' =>  Auth::user()->id,
             'deviseId' => $request->devise,
             'date' => $request->date,
+            'code' => $transfertTransaction->code,
             'paysId' => $request->paysId,
             'montant' => $request->montant,
             'retraitantCommission' => $retraitantCommission,
