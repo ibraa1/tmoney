@@ -53,8 +53,15 @@ class TransactionController extends Controller
     public function store(TransactionRequest $request)
     {
         $code = mt_rand(100000, 999999);
-        $totalCommission = $this->calculateCommission($request->devise, $this->calculateAmount($request->montant, $request->remise, $request->typeRemise));
 
+        if ($request->isChecked) {
+            // Ajout de la commission au montant
+            $totalCommission = $request->commission;
+            $totalAmount = $this->calculateAmount($request->montant, $request->remise, $request->typeRemise);
+        } else {
+            $totalCommission = $this->calculateCommission($request->devise, $this->calculateAmount($request->montant, $request->remise, $request->typeRemise));
+            $totalAmount = $this->calculateAmount($request->montant, $request->remise, $request->typeRemise) - $this->calculateCommission($request->devise, $this->calculateAmount($request->montant, $request->remise, $request->typeRemise));
+        }
 
         $agentCommission = $totalCommission * 0.4;
         $retraitantCommission = $totalCommission * 0.3;
@@ -73,7 +80,7 @@ class TransactionController extends Controller
             'remise' => $request->remise,
             'typeRemise' => $request->typeRemise,
             'paysId' => $request->paysId,
-            'montant' => $this->calculateAmount($request->montant, $request->remise, $request->typeRemise) - $this->calculateCommission($request->devise, $this->calculateAmount($request->montant, $request->remise, $request->typeRemise)),
+            'montant' => $totalAmount,
             'clientId' => $request->clientId,
             'receveurId' => $request->receveurId,
             'creationUserId' => Auth::user()->id,
@@ -84,14 +91,15 @@ class TransactionController extends Controller
         if ($userBalance && $userBalance->montant >= ($transaction->montant - $userBalance->montantTotalComission - $userBalance->commission)) {
             // La balance existe et le solde est suffisant
             $transaction->save(); // Sauvegarde de la transaction
-            $userBalance->decrement('montant', $transaction->montant);
+            $montantARetire = $transaction->montant + $transaction->commission;
+            $userBalance->decrement('montant', $montantARetire);
             $userBalance->increment('montantTotalComission', $agentCommission);
             $userBalance->modificationUserId = Auth::user()->id;
             $userBalance->save();
 
             // Mise à jour de la balance de l'admin
             $deviseEntreeTransaction = Devise::find($request->devise)->deviseEntree;
-            $adminBalance = Balance::where('userId', 1)
+            $adminBalance = Balance::where('userId', 6)
                 ->whereHas('detailBalance', function ($query) use ($deviseEntreeTransaction) {
                     $query->whereHas('devise', function ($subquery) use ($deviseEntreeTransaction) {
                         $subquery->where('deviseEntree', $deviseEntreeTransaction);
@@ -209,6 +217,28 @@ class TransactionController extends Controller
             } else {
                 // Commission de 1% du montant
                 $commission = ($montant * 0.01);
+            }
+        }
+
+        return $commission;
+    }
+
+    public function commission(Request $request)
+    {
+        $devise = Devise::find($request->devise);
+
+        // Vérifier si c'est un transfert national
+        if ($devise->deviseEntree == $devise->deviseSortie) {
+            // Transfert national, commission de 1% du montant
+            $commission = ($request->montant * 0.01);
+        } else {
+            // Transfert international
+            if ($devise->deviseEntree == 'XOF') {
+                // Commission de 200 pour chaque tranche de 5000
+                $commission = floor(($request->montant / 5000) * 200);
+            } else {
+                // Commission de 1% du montant
+                $commission = ($request->montant * 0.01);
             }
         }
 

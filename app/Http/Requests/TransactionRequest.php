@@ -31,6 +31,8 @@ class TransactionRequest extends FormRequest
             'paysId' => 'required|exists:payss,id',
             'clientId' => 'required|exists:users,id',
             'receveurId' => 'required|exists:users,id',
+            'commission' => 'nullable|numeric',
+            'isChecked' => 'nullable',
         ];
     }
 }

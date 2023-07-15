@@ -55,9 +55,9 @@ class UserController extends Controller
         $deviseEntree = Devise::find($request->devise)->deviseEntree;
         $min = 0;
         $max = $deviseEntree === 'GNF' ? 50000000 : $this->convertToMaxEquivalent($request->devise, 5000000);
-        if ($request->min !=  $min || $request->max  !=  $max) {
-            return redirect()->back()->with('error', 'Les valeurs pour les champs min et max sont invalides.');
-        }
+        // if ($request->min !=  $min || $request->max  !=  $max) {
+        //     return redirect()->back()->with('error', 'Les valeurs pour les champs min et max sont invalides.');
+        // }
         $user = new User([
             'nom' => $request->nom,
             'prenom' => $request->prenom,

@@ -55,12 +55,12 @@ class BalanceController extends Controller
         $deviseEntree = Devise::find($request->devise)->deviseEntree;
         $min = 0;
         $max = $deviseEntree === 'GNF' ? 50000000 : $this->convertToMaxEquivalent($request->devise, 5000000);
-        if ($request->min !=  $min || $request->max  !=  $max) {
-            return redirect()->back()->with('error', 'Les valeurs pour les champs min et max sont invalides.');
-        }
+        // if ($request->min !=  $min || $request->max  !=  $max) {
+        //     return redirect()->back()->with('error', 'Les valeurs pour les champs min et max sont invalides.');
+        // }
         // Vérification si l'utilisateur a déjà une balance avec la même devise
         $existingBalance = Balance::where('userId', $request->userId)
-            ->whereHas('detailBalances', function ($query) use ($request) {
+            ->whereHas('detailBalance', function ($query) use ($request) {
                 $query->where('deviseId', $request->devise);
             })
             ->first();
@@ -139,9 +139,9 @@ class BalanceController extends Controller
         $deviseEntree = Devise::find($request->devise)->deviseEntree;
         $min = 0;
         $max = $deviseEntree === 'GNF' ? 50000000 : $this->convertToMaxEquivalent($request->devise, 5000000);
-        if ($request->min !=  $min || $request->max  !=  $max) {
-            return redirect()->back()->with('error', 'Les valeurs pour les champs min et max sont invalides.');
-        }
+        // if ($request->min !=  $min || $request->max  !=  $max) {
+        //     return redirect()->back()->with('error', 'Les valeurs pour les champs min et max sont invalides.');
+        // }
         $balance = Balance::find($id);
         if (!$balance) {
             return redirect()->route('balances.index')->with('error', 'La balance n\'existe pas.');

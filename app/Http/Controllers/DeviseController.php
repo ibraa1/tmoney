@@ -18,7 +18,7 @@ class DeviseController extends Controller
     public function devises()
     {
         $devises = Devise::whereNull('dateFin')
-        ->where('deviseEntree', Auth::user()->balances[0]->detailBalance->devise->deviseEntree)
+            ->where('deviseEntree', Auth::user()->balances[0]->detailBalance->devise->deviseEntree)
             ->get();
         return response()->json($devises);
     }
@@ -38,7 +38,9 @@ class DeviseController extends Controller
     {
         $existingDevise = Devise::where('deviseEntree', $request->deviseEntree)
             ->where('deviseSortie', $request->deviseSortie)
+            ->orderBy('dateDebut', 'desc')
             ->first();
+        // dd($existingDevise);
 
         if ($existingDevise) {
             $existingDevise->dateFin = now()->format('Y-m-d');

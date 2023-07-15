@@ -85,6 +85,8 @@ Route::middleware(['auth'])->group(
         Route::post('/searchByCode', [RetraitController::class, 'searchByCode'])->name('searchByCode');
         Route::get('/calculette', [CalculetteController::class, 'index'])->name('calculette');
         Route::post('/calculette', [CalculetteController::class, 'calculette'])->name('getCalculette');
+
+        Route::post('/commission', [TransactionController::class, 'commission'])->name('commission');
     }
 );
 
@@ -94,6 +96,7 @@ Route::middleware(['guest'])->group(
         // les routes pour auth
         Route::get('login', [AuthController::class, 'index'])->name('getLogin');
         Route::post('login', [AuthController::class, 'login'])->name('login');
+        Route::get('/reload-captcha', [AuthController::class, 'reloadCaptcha']);
 
         Route::get('/forgot-password', function () {
             return view('pages.auth.forgot-password');

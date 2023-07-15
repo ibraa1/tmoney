@@ -10,9 +10,7 @@ class CalculetteController extends Controller
 {
     public function index()
     {
-        $devises = Devise::whereNull('dateFin')
-            ->where('deviseEntree', Auth::user()->balances[0]->detailBalance->devise->deviseEntree)
-            ->get();
+        $devises = Devise::whereNull('dateFin')->get();
         return view('pages.calculettes.index', compact('devises'));
     }
     public function calculette(Request $request)

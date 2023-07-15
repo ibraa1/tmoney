@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('frequence');
             $table->string('deviseEntree');
             $table->string('deviseSortie');
-            $table->decimal('courDevise', 10, 2);
+            $table->decimal('courDevise', 15, 9);
             $table->date('dateDebut');
             $table->date('dateFin')->nullable();
             $table->unsignedBigInteger('creationUserId');

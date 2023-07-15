@@ -320,10 +320,39 @@ function getMontantConverti(montant, devise) {
   }
 }
 
+$(document).ready(function() {
+    $('#isChecked').change(function() {
+        if ($(this).is(':checked')) {
+            $('#commission').prop('disabled', false);
+        } else {
+            $('#commission').prop('disabled', true);
+        }
+    });
+});
+$(document).ready(function() {
+    $('#montant, #devise').change(function() {
+        var montant = $('#montant').val();
+        var devise = $('#devise').val();
+        getCommission(montant, devise);
+    });
+});
 
-
-
-
+$(document).ready(function() {
+    $('#reload').click(function() {
+    $.get("/reload-captcha",
+    function (response) {
+        $(".captcha span").html(response.captcha);
+    });
+    });
+});
+function getCommission(montant, devise) {
+  if (montant != "" && devise != "" ) {
+    $.post("/commission", { montant: montant, devise: devise },
+    function (response) {
+        $('#commission').val(response);
+    });
+  }
+}
 
 
 

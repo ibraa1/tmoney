@@ -275,6 +275,17 @@
                                             <input type="string" readonly class="form-control" required id="montantDef"
                                                 name="montantDef">
                                         </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label for="input01">Comission</label>
+                                            </label>
+                                            <input type="string" readonly class="form-control" id="commission"
+                                                name="commission">
+                                        </div>
+                                        <div class="col-md-1 mb-3 custom-control custom-control-inline custom-checkbox">
+                                            <input type="checkbox" name="isChecked"
+                                                class="custom-control-input form-control" id="isChecked" checked>
+                                            <label class="custom-control-label" for="isChecked"></label>
+                                        </div>
 
                                     </div><!-- /form row -->
                                     <hr class="mt-5">

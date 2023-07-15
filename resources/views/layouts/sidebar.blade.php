@@ -165,11 +165,14 @@
                                           class="menu-text">Utilisateurs</span></a>
                               </li>
                           @endif
-                          <li class="menu-item">
-                              <a href="{{ route('devises.index') }}" class="menu-link"><span
-                                      class="menu-icon fa fa-dollar-sign"></span> <span class="menu-text">Devises</span>
-                              </a>
-                          </li>
+                          @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superAdmin')
+                              <li class="menu-item">
+                                  <a href="{{ route('devises.index') }}" class="menu-link"><span
+                                          class="menu-icon fa fa-dollar-sign"></span> <span
+                                          class="menu-text">Devises</span>
+                                  </a>
+                              </li>
+                          @endif
                           <li class="menu-item">
                               <a href="{{ route('balances.index') }}" class="menu-link"><span
                                       class="menu-icon fa fa-wallet"></span> <span class="menu-text">Balances</span>
