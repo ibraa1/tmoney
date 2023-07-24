@@ -39,7 +39,7 @@ class FactureController extends Controller
             'code' => $transaction->code,
             'numeroFacture' => $transaction->id,
             'client' => $transaction->client->prenom . ' ' . $transaction->client->nom,
-            'destinataire' => $transaction->receveur->prenom . ' ' . $transaction->receveur->prenom,
+            'destinataire' => $transaction->receveur->prenom . ' ' . $transaction->receveur->nom,
             'montant' => $transaction->montant . $devise->deviseSortie,
             'description' => 'Retrait',
             'date' => $transaction->date

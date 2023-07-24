@@ -54,6 +54,14 @@ class TransactionController extends Controller
     {
         $code = mt_rand(100000, 999999);
 
+        // Vérifier si le code généré existe déjà dans la base de données
+        $existingTransaction = Transaction::where('code', $code)->first();
+        while ($existingTransaction) {
+            // Si le code existe déjà, générer un nouveau code
+            $code = mt_rand(100000, 999999);
+            $existingTransaction = Transaction::where('code', $code)->first();
+        }
+
         if ($request->isChecked) {
             // Ajout de la commission au montant
             $totalCommission = $request->commission;
@@ -205,18 +213,23 @@ class TransactionController extends Controller
     {
         $devise = Devise::find($deviseId);
 
-        // Vérifier si c'est un transfert national
-        if ($devise->deviseEntree == $devise->deviseSortie) {
-            // Transfert national, commission de 1% du montant
+        // Vérifier si le montant dépasse 500 000 pour une commission fixe de 1%
+        if ($montant > 500000) {
             $commission = ($montant * 0.01);
         } else {
-            // Transfert international
-            if ($devise->deviseEntree == 'XOF') {
-                // Commission de 200 pour chaque tranche de 5000
-                $commission = floor(($montant / 5000) * 200);
-            } else {
-                // Commission de 1% du montant
+            // Vérifier si c'est un transfert national
+            if ($devise->deviseEntree == $devise->deviseSortie) {
+                // Transfert national, commission de 1% du montant
                 $commission = ($montant * 0.01);
+            } else {
+                // Transfert international
+                if ($devise->deviseEntree == 'XOF') {
+                    // Commission de 200 pour chaque tranche de 5000
+                    $commission = floor(($montant / 5000) * 200);
+                } else {
+                    // Commission de 1% du montant
+                    $commission = ($montant * 0.01);
+                }
             }
         }
 

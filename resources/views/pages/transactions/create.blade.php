@@ -382,32 +382,33 @@
                     <div class="form-row">
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label for="cnContactName">Nom</label> <input required type="text" name="nom"
-                                    id="cnContactName" class="form-control">
+                                <label for="cnContactName">Nom <abbr title="Required">*</abbr></label> <input required
+                                    type="text" name="nom" id="cnContactName" class="form-control">
                             </div>
                         </div>
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label for="cnContactName">Prenom</label> <input required name="prenom"
-                                    type="text" id="cnContactName" class="form-control">
+                                <label for="cnContactName">Prenom <abbr title="Required">*</abbr></label> <input
+                                    required name="prenom" type="text" id="cnContactName" class="form-control">
                             </div>
                         </div>
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label for="cnContactName">Telephone</label> <input required type="text"
-                                    name="telephone" id="cnContactName" class="form-control">
+                                <label for="cnContactName">Telephone <abbr title="Required">*</abbr></label> <input
+                                    required type="text" name="telephone" id="cnContactName"
+                                    class="form-control">
                             </div>
                         </div>
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label for="cnContactEmail">Email</label> <input required type="email"
-                                    name="email" id="cnContactEmail" class="form-control">
+                                <label for="cnContactEmail">Email </label> <input type="email" name="email"
+                                    id="cnContactEmail" class="form-control">
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="cnCountry">Pays</label>
+                                <label for="cnCountry">Pays <abbr title="Required">*</abbr></label>
                                 <select required id="paysId" name="pays" class="custom-select d-block w-100">
                                     <option value=""> Choisis... </option>
                                     @foreach ($pays as $country)
@@ -418,7 +419,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="cnCity">Ville</label>
+                                <label for="cnCity">Ville <abbr title="Required">*</abbr></label>
                                 <select required id="ville" name="ville" class="custom-select d-block w-100">
                                     <option value=""> Choisis... </option>
                                 </select>

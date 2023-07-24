@@ -41,13 +41,28 @@ class RetraitController extends Controller
             $deviseTransfert = Devise::find($request->devise)->deviseSortie;
             $deviseBalance = Auth::user()->balances[0]->detailBalance->devise->deviseEntree;
 
+            $userBalance = Balance::where('userId', Auth::user()->id)->first();
+            $maxAllowedBalance = $userBalance->detailBalance->max;
+            if ($userBalance->montant + $request->montant > $maxAllowedBalance) {
+                return redirect()->back()->with('error', 'Le montant du retrait dépasse le solde maximum autorisé.');
+            }
+
             if ($deviseTransfert === $deviseBalance) {
                 // Calcul de la commission du retraitant
                 $retraitantCommission = $transfertTransaction->retraitantCommission;
 
-                // Mise à jour du statut de la transaction à 'OK'
-                $transfertTransaction->statut = 'OK';
-                $transfertTransaction->save();
+                $deviseEntreeAgent = Auth::user()->balances[0]->detailBalance->devise->deviseEntree;
+                $deviseEntreeTransaction = Devise::find($request->devise)->deviseEntree;
+                $devise = Devise::where('deviseEntree', $deviseEntreeTransaction)
+                    ->where('deviseSortie', $deviseEntreeAgent)
+                    ->first();
+                if ($devise) {
+                    $tauxDeChange = $devise->courDevise;
+                    $commissionAgent = $retraitantCommission * $tauxDeChange;
+                    $userBalance = Balance::where('userId', Auth::user()->id)->first();
+                } else {
+                    return redirect()->back()->with('error', 'Erreur, aucun taux de change trouvé contactez l\'admin pour votre commission.');
+                }
             } else {
                 // La devise de la requête ne correspond pas à la devise de la balance de l'utilisateur
                 return redirect()->back()->with('error', 'La devise de la requête ne correspond pas à la devise de la balance de l\'utilisateur.');
@@ -65,7 +80,7 @@ class RetraitController extends Controller
             //'code' => $transfertTransaction->code,
             'paysId' => $request->paysId,
             'montant' => $request->montant,
-            'retraitantCommission' => $retraitantCommission,
+            'retraitantCommission' => $commissionAgent,
             'clientId' => $request->clientId,
             'receveurId' => $request->receveurId,
             'creationUserId' => Auth::user()->id,
@@ -73,12 +88,17 @@ class RetraitController extends Controller
         ]);
 
         $transaction->save();
+
+        // Update the status of the transfertTransaction to 'OK' after saving the retrait transaction
+        $transfertTransaction->statut = 'OK';
+        $transfertTransaction->save();
+
         $userBalance = Balance::where('userId', Auth::user()->id)->first();
 
         if ($userBalance) {
             // La balance existe, mise à jour du montant
             $userBalance->increment('montant', $transaction->montant);
-            $userBalance->increment('montantTotalComission', $retraitantCommission);
+            $userBalance->increment('montantTotalComission', $commissionAgent);
             $userBalance->modificationUserId = Auth::user()->id;
             $userBalance->save();
         }
@@ -88,6 +108,7 @@ class RetraitController extends Controller
             // Gérer l'erreur
             return redirect()->back()->with('error', 'Erreur lors de la mise à jour de la balance.');
         }
+
 
         return redirect()->route('transactions.index')->with('success', 'La transaction a été effectuée avec succès.');
     }

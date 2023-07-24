@@ -35,8 +35,8 @@
                                         data-live-search="true" data-width="100%">
                                         <option value="">Sélectionner une devise</option>
                                         @foreach ($devises as $devise)
-                                            <option value="{{ $devise->id }}">{{ $devise->deviseSortie }} en
-                                                {{ $devise->deviseEntree }}</option>
+                                            <option value="{{ $devise->id }}">{{ $devise->deviseEntree }} en
+                                                {{ $devise->deviseSortie }}</option>
                                         @endforeach
                                     </select>
 

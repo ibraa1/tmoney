@@ -26,7 +26,7 @@ class ClientRequest extends FormRequest
             'nom' => 'required|string|max:255',
             'prenom' => 'required|string|max:255',
             'email' => [
-                'required',
+                'nullable',
                 'email',
                 Rule::unique('users')->ignore($this->user),
             ],

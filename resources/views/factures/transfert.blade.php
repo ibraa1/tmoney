@@ -3,7 +3,7 @@
 <link href="{{ asset('assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet" />
 
 <head>
-    <title>Facture Transfert</title>
+    <title>Transfert</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -93,12 +93,12 @@
     <div id="fac">
         <div class="invoice" id="invoice">
             <div class="invoice-header">
-                <h1>Facture Transfert TMoney </h1>
+                <h1>Transfert TMoney </h1>
             </div>
 
             <div class="invoice-details">
                 <p> Date: <strong>{{ $data['date'] }} </strong></p>
-                <p>Numéro de facture: <strong>{{ $data['id'] }} </strong></p>
+                <p>Nº: <strong>{{ $data['id'] }} </strong></p>
                 <p>Client: <strong>{{ $data['client'] }} </strong></p>
                 <p>Destinataire: <strong>{{ $data['destinataire'] }} </strong></p>
             </div>
@@ -133,23 +133,23 @@
             <div class="invoice-signature">
                 <div>
                     <p>Signature du client: _____________________</p>
-                    <p>Date: _____________________</p>
+
                 </div>
                 <div>
                     <p>Signature de l'agent: _____________________</p>
-                    <p>Date: _____________________</p>
+
                 </div>
             </div>
         </div>
         <hr>
         <div class="invoice" id="invoice">
             <div class="invoice-header">
-                <h1>Facture Transfert TMoney </h1>
+                <h1>Transfert TMoney </h1>
             </div>
 
             <div class="invoice-details">
                 <p> Date: <strong>{{ $data['date'] }} </strong></p>
-                <p>Numéro de facture: <strong>{{ $data['id'] }} </strong></p>
+                <p>Nº: <strong>{{ $data['id'] }} </strong></p>
                 <p>Client: <strong>{{ $data['client'] }} </strong></p>
                 <p>Destinataire: <strong>{{ $data['destinataire'] }} </strong></p>
             </div>
@@ -184,11 +184,11 @@
             <div class="invoice-signature">
                 <div>
                     <p>Signature du client: _____________________</p>
-                    <p>Date: _____________________</p>
+
                 </div>
                 <div>
                     <p>Signature de l'agent: _____________________</p>
-                    <p>Date: _____________________</p>
+
                 </div>
             </div>
         </div>
@@ -224,7 +224,7 @@
                     var randomNumber = Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
 
                     // Ajouter le nombre aléatoire au nom du fichier
-                    var fileName = 'facture_transfert' + randomNumber + '.pdf';
+                    var fileName = 'transfert' + randomNumber + '.pdf';
 
                     doc.save(fileName);
                     facture.width(cache_width);

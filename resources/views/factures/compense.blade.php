@@ -3,7 +3,7 @@
 <link href="{{ asset('assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet" />
 
 <head>
-    <title>Facture Compense</title>
+    <title>Compense</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -93,13 +93,13 @@
     <div id="fac">
         <div class="invoice" id="invoice">
             <div class="invoice-header">
-                <h1>Facture Compense TMoney </h1>
+                <h1>Compense TMoney </h1>
             </div>
 
             <div class="invoice-details">
                 <p> Date d'initiation: <strong>{{ $data['dateInitiation'] }} </strong></p>
                 <p> Date d'approbation: <strong>{{ $data['dateApprobation'] }} </strong></p>
-                <p>Numéro de facture: <strong>{{ $data['id'] }} </strong></p>
+                <p>Nº: <strong>{{ $data['id'] }} </strong></p>
                 <p>Agent initiateur : <strong>{{ $data['agent'] }} </strong></p>
             </div>
 
@@ -128,24 +128,22 @@
             <div class="invoice-signature">
                 <div>
                     <p>Signature du client: _____________________</p>
-                    <p>Date: _____________________</p>
                 </div>
                 <div>
                     <p>Signature de l'agent: _____________________</p>
-                    <p>Date: _____________________</p>
                 </div>
             </div>
         </div>
         <hr>
         <div class="invoice" id="invoice">
             <div class="invoice-header">
-                <h1>Facture Compense TMoney </h1>
+                <h1>Compense TMoney </h1>
             </div>
 
             <div class="invoice-details">
-                <p> Date d'initiation: <strong>{{ $data['dateInitiation'] }} </strong></p>
-                <p> Date d'approbation: <strong>{{ $data['dateApprobation'] }} </strong></p>
-                <p>Numéro de facture: <strong>{{ $data['id'] }} </strong></p>
+                <p>Date d'initiation: <strong>{{ $data['dateInitiation'] }} </strong></p>
+                <p>Date d'approbation: <strong>{{ $data['dateApprobation'] }} </strong></p>
+                <p>Nº: <strong>{{ $data['id'] }} </strong></p>
                 <p>Agent initiateur : <strong>{{ $data['agent'] }} </strong></p>
             </div>
 
@@ -174,11 +172,11 @@
             <div class="invoice-signature">
                 <div>
                     <p>Signature du client: _____________________</p>
-                    <p>Date: _____________________</p>
+
                 </div>
                 <div>
                     <p>Signature de l'agent: _____________________</p>
-                    <p>Date: _____________________</p>
+
                 </div>
             </div>
         </div>
@@ -214,7 +212,7 @@
                     var randomNumber = Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
 
                     // Ajouter le nombre aléatoire au nom du fichier
-                    var fileName = 'facture_compense' + randomNumber + '.pdf';
+                    var fileName = 'compense' + randomNumber + '.pdf';
 
                     doc.save(fileName);
                     facture.width(cache_width);
