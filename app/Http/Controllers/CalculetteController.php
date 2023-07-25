@@ -49,7 +49,17 @@ class CalculetteController extends Controller
                 // Transfert international
                 if ($devise->deviseSortie == 'XOF') {
                     // Commission de 200 pour chaque tranche de 5000
-                    $commission = ($montant / 5000) * 200;
+                    if ($montant <= 25000) {
+                        $commission = ($montant / 5000) * 250;
+                    } elseif ($montant <= 50000) {
+                        $commission = ($montant / 5000) * 200;
+                    } elseif ($montant <= 150000) {
+                        $commission = ($montant / 5000) * 150;
+                    } elseif ($montant <= 250000) {
+                        $commission = ($montant / 5000) * 100;
+                    } else {
+                        $commission = ($montant / 5000) * 75;
+                    }
                 } else {
                     // Commission de 1% du montant
                     $commission = $montant * 0.01;

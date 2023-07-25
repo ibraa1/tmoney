@@ -7,7 +7,7 @@
 <script src="{{ asset('assets/vendor/easy-pie-chart/jquery.easypiechart.min.js') }}"></script>
 <script src="{{ asset('assets/vendor/chart.js/Chart.min.js') }}"></script>
 
-
+<script src="{{ asset('assets/javascript/apexcharts.min.js') }}"></script>
 <script src="{{ asset('assets/javascript/pages/dashboard-demo.js') }}"></script>
 
 

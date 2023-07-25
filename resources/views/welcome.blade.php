@@ -8,123 +8,193 @@
                     l'état de
                     ton business</span>
             </p>
-            <div class="ml-auto">
-            </div>
+            @if (Auth::user()->role == 'agent')
+                <div class="ml-auto">
+                    <p>Solde: @foreach (Auth::user()->balances as $balance)
+                            {{ number_format($balance->montant, 2, ',', ' ') }}
+                            {{ $balance->detailBalance->devise->deviseEntree }}<br>
+                        @endforeach
+                    </p>
+                </div>
+            @endif
         </div>
     </header><!-- /.page-title-bar -->
     <!-- .page-section -->
-    <div class="page-section">
-        <!-- .section-block -->
-        <div class="section-block">
-            <!-- metric row -->
-            <div class="metric-row">
-                <div class="col-lg-9">
-                    <div class="metric-row metric-flush">
-                        <!-- metric column -->
-                        <div class="col">
-                            <!-- .metric -->
-                            <a href="user-teams.html" class="metric metric-bordered align-items-center">
-                                <h2 class="metric-label"> Clients </h2>
-                                <p class="metric-value h3">
-                                    <sub><i class="oi oi-people"></i></sub> <span class="value">{{ $totalClients }}</span>
-                                </p>
-                            </a> <!-- /.metric -->
-                        </div><!-- /metric column -->
-                        <!-- metric column -->
-                        <div class="col">
-                            <!-- .metric -->
-                            <a href="user-projects.html" class="metric metric-bordered align-items-center">
-                                <h2 class="metric-label"> Transactions </h2>
-                                <p class="metric-value h3">
-                                    <sub><i class="oi oi-fork"></i></sub> <span
-                                        class="value">{{ $totalTransactions }}</span>
-                                </p>
-                            </a> <!-- /.metric -->
-                        </div><!-- /metric column -->
-                        <!-- metric column -->
-                        <div class="col">
-                            <!-- .metric -->
-                            <a href="user-tasks.html" class="metric metric-bordered align-items-center">
-                                <h2 class="metric-label"> Agents </h2>
-                                <p class="metric-value h3">
-                                    <sub><i class="fa fa-tasks"></i></sub> <span class="value">{{ $totalAgents }}</span>
-                                </p>
-                            </a> <!-- /.metric -->
-                        </div><!-- /metric column -->
-                    </div>
-                </div><!-- metric column -->
-                <div class="col-lg-3">
-                    <!-- .metric -->
-                    <a href="user-tasks.html" class="metric metric-bordered">
-                        <div class="metric-badge">
-                            <span class="badge badge-lg badge-success"><span class="oi oi-media-record pulse mr-1"></span>
-                                TRANSACTIONS DU JOUR</span>
+    @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superAdmin')
+        <div class="page-section">
+            <!-- .section-block -->
+            <div class="section-block">
+                <!-- metric row -->
+                <div class="metric-row">
+                    <div class="col-lg-9">
+                        <div class="metric-row metric-flush">
+                            <!-- metric column -->
+                            <div class="col">
+                                <!-- .metric -->
+                                <a href="" class="metric metric-bordered align-items-center">
+                                    <h2 class="metric-label"> Clients </h2>
+                                    <p class="metric-value h3">
+                                        <sub><i class="oi oi-people"></i></sub> <span
+                                            class="value">{{ $totalClients }}</span>
+                                    </p>
+                                </a> <!-- /.metric -->
+                            </div><!-- /metric column -->
+                            <!-- metric column -->
+                            <div class="col">
+                                <!-- .metric -->
+                                <a href="" class="metric metric-bordered align-items-center">
+                                    <h2 class="metric-label"> Transactions </h2>
+                                    <p class="metric-value h3">
+                                        <sub><i class="oi oi-fork"></i></sub> <span
+                                            class="value">{{ $totalTransactions }}</span>
+                                    </p>
+                                </a> <!-- /.metric -->
+                            </div><!-- /metric column -->
+                            <!-- metric column -->
+                            <div class="col">
+                                <!-- .metric -->
+                                <a href="" class="metric metric-bordered align-items-center">
+                                    <h2 class="metric-label"> Agents </h2>
+                                    <p class="metric-value h3">
+                                        <sub><i class="fa fa-tasks"></i></sub> <span
+                                            class="value">{{ $totalAgents }}</span>
+                                    </p>
+                                </a> <!-- /.metric -->
+                            </div><!-- /metric column -->
                         </div>
-                        <p class="metric-value h3">
-                            <sub><i class="oi oi-timer"></i></sub> <span class="value">{{ $transactionsToday }}</span>
-                        </p>
-                    </a> <!-- /.metric -->
-                </div><!-- /metric column -->
-            </div><!-- /metric row -->
-        </div><!-- /.section-block -->
-        <!-- grid row -->
-        <div class="row">
-            <!-- grid column -->
-            <div class="col-12 col-lg-12 col-xl-6">
-                <!-- .card -->
-                <div class="card card-fluid">
-                    <!-- .card-body -->
-                    <div class="card-body">
-                        <h3 class="card-title mb-4"> Transactions mensuels </h3>
-                        <div class="chartjs" style="height: 292px">
-                            <canvas id="completion-tasks"></canvas>
-                        </div>
-                    </div><!-- /.card-body -->
-                </div><!-- /.card -->
-            </div><!-- /grid column -->
-            <!-- grid column -->
-            <div class="col-12 col-lg-12 col-xl-6">
-                <!-- .card -->
-                <div class="card card-fluid">
-                    <!-- .card-body -->
-                    <div class="card-body">
-                        <h3 class="card-title">Objectif mensuel </h3><!-- easy-pie-chart -->
-                        <div class="text-center pt-3">
-                            <div class="chart-inline-group" style="height:214px">
-                                <div class="easypiechart" data-toggle="easypiechart" data-percent="100" data-size="214"
-                                    data-bar-color="#346CB0" data-track-color="false" data-scale-color="false"
-                                    data-rotate="225"></div>
-                                <div class="easypiechart" data-toggle="easypiechart" data-percent="75" data-size="174"
-                                    data-bar-color="#00A28A" data-track-color="false" data-scale-color="false"
-                                    data-rotate="225"></div>
-                                <div class="easypiechart" data-toggle="easypiechart" data-percent="60" data-size="134"
-                                    data-bar-color="#5F4B8B" data-track-color="false" data-scale-color="false"
-                                    data-rotate="225"></div>
+                    </div><!-- metric column -->
+                    <div class="col-lg-3">
+                        <!-- .metric -->
+                        <a href="" class="metric metric-bordered">
+                            <div class="metric-badge">
+                                <span class="badge badge-lg badge-success"><span
+                                        class="oi oi-media-record pulse mr-1"></span>
+                                    TRANSACTIONS DU JOUR</span>
                             </div>
-                        </div><!-- /easy-pie-chart -->
-                    </div><!-- /.card-body -->
-                    <!-- .card-footer -->
-                    <div class="card-footer">
-                        <div class="card-footer-item">
-                            <i class="fa fa-fw fa-circle text-indigo"></i> 100% <div class="text-muted small"> Assigned
+                            <p class="metric-value h3">
+                                <sub><i class="oi oi-timer"></i></sub> <span class="value">{{ $transactionsToday }}</span>
+                            </p>
+                        </a> <!-- /.metric -->
+                    </div><!-- /metric column -->
+                </div><!-- /metric row -->
+            </div><!-- /.section-block -->
+            <!-- grid row -->
+            <div class="row">
+                <!-- grid column -->
+                <div class="col-12 col-lg-12 col-xl-6">
+                    <!-- .card -->
+                    <div class="card card-fluid">
+                        <!-- .card-body -->
+                        <div class="card-body">
+                            <h3 class="card-title mb-4"> Transactions de la semaine </h3>
+                            <div id="transactions" data-colors="#35b8e0" style="height: 292px">
                             </div>
-                        </div>
-                        <div class="card-footer-item">
-                            <i class="fa fa-fw fa-circle text-purple"></i> 75% <div class="text-muted small"> Completed
+                        </div><!-- /.card-body -->
+                    </div><!-- /.card -->
+                </div><!-- /grid column -->
+                <!-- grid column -->
+                <div class="col-12 col-lg-12 col-xl-6">
+                    <!-- .card -->
+                    <div class="card card-fluid">
+                        <!-- .card-body -->
+                        <div class="card-body">
+                            <h3 class="card-title mb-4"> Balances des Agents </h3>
+                            <div id="balances" data-colors="#536de6,#35b8e0,#cfe1f6" style="height: 292px">
                             </div>
-                        </div>
-                        <div class="card-footer-item">
-                            <i class="fa fa-fw fa-circle text-teal"></i> 60% <div class="text-muted small"> Active </div>
-                        </div>
-                    </div><!-- /.card-footer -->
-                </div><!-- /.card -->
-            </div><!-- /grid column -->
-        </div><!-- /grid row -->
+                        </div><!-- /.card-body -->
 
+                    </div><!-- /.card -->
+                </div><!-- /grid column -->
+            </div><!-- /grid row -->
 
-    </div><!-- /.page-section -->
+        </div><!-- /.page-section -->
+    @endif
+
 
 @endsection
 @section('script')
+    <script>
+        $(document).ready(function() {
+            $("#transactions").empty();
+            var colors = ["#39afd1"],
+                dataColors = $("#transactions").data("colors");
+            dataColors && (colors = dataColors.split(","));
+            var options = {
+                    chart: {
+                        height: 380,
+                        type: "bar",
+                        toolbar: {
+                            show: !1
+                        }
+                    },
+                    plotOptions: {
+                        bar: {
+                            vertical: !0
+                        }
+                    },
+                    dataLabels: {
+                        enabled: !0
+                    },
+                    series: [{
+                        name: "transactions",
+                        data: @json($transactionCounts),
+                    }, ],
+                    colors: colors,
+                    xaxis: {
+                        categories: @json($labels),
+                    },
+                    states: {
+                        hover: {
+                            filter: "none"
+                        }
+                    },
+                    grid: {
+                        borderColor: "#f1f3fa"
+                    },
+                },
+                chart = new ApexCharts(document.querySelector("#transactions"), options);
+            chart.render();
 
+
+            $("#balances").empty();
+            var colors = ["#39af1"],
+                dataColors = $("#balances").data("colors");
+            dataColors && (colors = dataColors.split(","));
+            var options = {
+                    chart: {
+                        height: 380,
+                        type: "bar",
+                        toolbar: {
+                            show: !1
+                        }
+                    },
+                    plotOptions: {
+                        bar: {
+                            vertical: !0
+                        }
+                    },
+                    dataLabels: {
+                        enabled: !0
+                    },
+                    series: [{
+                        name: "balances",
+                        data: @json($valuesBalances),
+                    }, ],
+                    colors: colors,
+                    xaxis: {
+                        categories: @json($labelAgents),
+                    },
+                    states: {
+                        hover: {
+                            filter: "none"
+                        }
+                    },
+                    grid: {
+                        borderColor: "#f1f3fa"
+                    },
+                },
+                chart = new ApexCharts(document.querySelector("#balances"), options);
+            chart.render();
+        });
+    </script>
 @endsection

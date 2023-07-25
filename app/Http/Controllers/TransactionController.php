@@ -217,40 +217,50 @@ class TransactionController extends Controller
         if ($montant > 500000) {
             $commission = ($montant * 0.01);
         } else {
-            // Vérifier si c'est un transfert national
-            if ($devise->deviseEntree == $devise->deviseSortie) {
-                // Transfert national, commission de 1% du montant
-                $commission = ($montant * 0.01);
-            } else {
-                // Transfert international
-                if ($devise->deviseEntree == 'XOF') {
-                    // Commission de 200 pour chaque tranche de 5000
-                    $commission = floor(($montant / 5000) * 200);
+            // Vérifier si c'est un transfert national (deviseEntree est le XOF)
+            if ($devise->deviseEntree == 'XOF') {
+                if ($montant <= 25000) {
+                    $commission = ($montant / 5000) * 250;
+                } elseif ($montant <= 50000) {
+                    $commission = ($montant / 5000) * 200;
+                } elseif ($montant <= 150000) {
+                    $commission = ($montant / 5000) * 150;
+                } elseif ($montant <= 250000) {
+                    $commission = ($montant / 5000) * 100;
                 } else {
-                    // Commission de 1% du montant
-                    $commission = ($montant * 0.01);
+                    $commission = ($montant / 5000) * 75;
                 }
+            } else {
+                // Transfert international, commission de 1% du montant
+                $commission = ($montant * 0.01);
             }
         }
 
         return $commission;
     }
 
+
     public function commission(Request $request)
     {
         $devise = Devise::find($request->devise);
 
-        // Vérifier si c'est un transfert national
-        if ($devise->deviseEntree == $devise->deviseSortie) {
-            // Transfert national, commission de 1% du montant
+        if ($request->montant > 500000) {
             $commission = ($request->montant * 0.01);
         } else {
-            // Transfert international
+            // Vérifier si c'est un transfert national (deviseEntree est le XOF)
             if ($devise->deviseEntree == 'XOF') {
-                // Commission de 200 pour chaque tranche de 5000
-                $commission = floor(($request->montant / 5000) * 200);
+                if ($request->montant <= 25000) {
+                    $commission = ($request->montant / 5000) * 250;
+                } elseif ($request->montant <= 50000) {
+                    $commission = ($request->montant / 5000) * 200;
+                } elseif ($request->montant <= 150000) {
+                    $commission = ($request->montant / 5000) * 150;
+                } elseif ($request->montant <= 250000) {
+                    $commission = ($request->montant / 5000) * 100;
+                } else {
+                    $commission = ($request->montant / 5000) * 75;
+                }
             } else {
-                // Commission de 1% du montant
                 $commission = ($request->montant * 0.01);
             }
         }

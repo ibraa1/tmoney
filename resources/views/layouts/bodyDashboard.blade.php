@@ -57,7 +57,7 @@
     </div>
     <!-- Scripts -->
     @include('layouts.scriptsDashboard')
-
+    @yield('script')
 </body>
 
 </html>
