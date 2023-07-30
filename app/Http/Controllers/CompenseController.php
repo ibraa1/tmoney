@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CompenseRequest;
 use App\Models\Balance;
 use App\Models\Compense;
+use App\Models\DetailBalance;
 use App\Models\DetailCompense;
 use App\Models\Devise;
 use App\Models\User;
@@ -37,8 +38,12 @@ class CompenseController extends Controller
      */
     public function create()
     {
+        $latestBalance = Auth::user()
+            ->balances()
+            ->latest('created_at')
+            ->first();
         $devises = Devise::whereNull('dateFin')
-            ->where('deviseEntree', Auth::user()->balances[0]->detailBalance->devise->deviseEntree)
+            ->where('deviseEntree', $latestBalance->detailBalance->devise->deviseEntree)
             ->get();
         return view('pages.compenses.create', compact('devises'));
     }
@@ -48,9 +53,13 @@ class CompenseController extends Controller
      */
     public function store(CompenseRequest $request)
     {
+        $latestBalance = Auth::user()
+            ->balances()
+            ->latest('created_at')
+            ->first();
         $devise = Devise::find($request->deviseId);
         if ($request->type == 'retraitBalance') {
-            if ($request->montant <= Auth::user()->balances[0]->montant) {
+            if ($request->montant <= $latestBalance->montant) {
                 // Création d'une demande de compensation pour le solde
                 $compense = new Compense([
                     'userId' => Auth::user()->id,
@@ -77,7 +86,7 @@ class CompenseController extends Controller
                 return redirect()->route('compenses.index')->with('error', 'La demande n\'a pas pu être envoyée. Votre solde est insuffisant.');
             }
         } elseif ($request->type == 'commission') {
-            if ($request->montant <= Auth::user()->balances[0]->montantTotalComission) {
+            if ($request->montant <= $latestBalance->montantTotalComission) {
                 // Création d'une demande de compensation pour la commission
                 $compense = new Compense([
                     'userId' => Auth::user()->id,
@@ -133,18 +142,37 @@ class CompenseController extends Controller
     {
         $compense = Compense::where('id', $id)->first();
         $user = User::where('id', $compense->userId)->first();
+        $latestBalance = $user
+            ->balances()
+            ->latest('created_at')
+            ->first();
         $devise = Devise::where('id', $compense->detailCompenses[0]->deviseId)->first();;
-        $userBalance = Balance::where('userId', $user->id)->first();
+        $userBalance = $latestBalance;
         if ($compense->detailCompenses[0]->type == 'retraitBalance' && $compense->statut == 'en attente') {
             $compense->statut = 'validé';
             $compense->dateApprobation = now();
             $compense->modificationUserId = Auth::user()->id;
             $compense->save();
 
-            $userBalance = Balance::where('userId', $user->id)->first();
-            $userBalance->decrement('montant', ($compense->detailCompenses[0]->montant / $devise->courDevise));
-            $userBalance->modificationUserId = Auth::user()->id;
-            $userBalance->save();
+            $userBalance = $latestBalance;
+            $balance = new Balance([
+                'montant' =>   $userBalance->montant - ($compense->detailCompenses[0]->montant / $devise->courDevise),
+                'userId' =>  $userBalance->userId,
+                'montantTotalComission' => $userBalance->montantTotalComission,
+                'creationUserId' => Auth::user()->id,
+                'modificationUserId' => Auth::user()->id,
+            ]);
+            $balance->save();
+
+            $detailBalance = new DetailBalance([
+                'balanceId' => $balance->id,
+                'deviseId' => $userBalance->detailBalance->deviseId,
+                'min' => $userBalance->detailBalance->min,
+                'max' => $userBalance->detailBalance->max,
+                'creationUserId' => Auth::user()->id,
+                'modificationUserId' => Auth::user()->id,
+            ]);
+            $detailBalance->save();
 
             return redirect()->route('compenses.index')->with('success', 'La demande a été approuvé avec succès.');
         } elseif ($compense->detailCompenses[0]->type == 'transfertBalance') {
@@ -154,10 +182,26 @@ class CompenseController extends Controller
                 $compense->modificationUserId = Auth::user()->id;
                 $compense->save();
 
-                $userBalance = Balance::where('userId', $user->id)->first();
-                $userBalance->increment('montant', ($compense->detailCompenses[0]->montant / $devise->courDevise));
-                $userBalance->modificationUserId = Auth::user()->id;
-                $userBalance->save();
+                $userBalance = $latestBalance;
+
+                $balance = new Balance([
+                    'montant' =>   $userBalance->montant + ($compense->detailCompenses[0]->montant / $devise->courDevise),
+                    'userId' =>  $userBalance->userId,
+                    'montantTotalComission' => $userBalance->montantTotalComission,
+                    'creationUserId' => Auth::user()->id,
+                    'modificationUserId' => Auth::user()->id,
+                ]);
+                $balance->save();
+
+                $detailBalance = new DetailBalance([
+                    'balanceId' => $balance->id,
+                    'deviseId' => $userBalance->detailBalance->deviseId,
+                    'min' => $userBalance->detailBalance->min,
+                    'max' => $userBalance->detailBalance->max,
+                    'creationUserId' => Auth::user()->id,
+                    'modificationUserId' => Auth::user()->id,
+                ]);
+                $detailBalance->save();
 
                 return redirect()->route('compenses.index')->with('success', 'La demande a été approuvé avec succès.');
             } else {
@@ -169,7 +213,27 @@ class CompenseController extends Controller
             $compense->modificationUserId = Auth::user()->id;
             $compense->save();
 
-            $userBalance = Balance::where('userId', $user->id)->first();
+            $userBalance = $latestBalance;
+
+            $balance = new Balance([
+                'montant' => $userBalance->montant,
+                'userId' =>  $userBalance->userId,
+                'montantTotalComission' => $userBalance->montantTotalComission - ($compense->detailCompenses[0]->montant / $devise->courDevise),
+                'creationUserId' => Auth::user()->id,
+                'modificationUserId' => Auth::user()->id,
+            ]);
+            $balance->save();
+
+            $detailBalance = new DetailBalance([
+                'balanceId' => $balance->id,
+                'deviseId' => $userBalance->detailBalance->deviseId,
+                'min' => $userBalance->detailBalance->min,
+                'max' => $userBalance->detailBalance->max,
+                'creationUserId' => Auth::user()->id,
+                'modificationUserId' => Auth::user()->id,
+            ]);
+            $detailBalance->save();
+
             $userBalance->decrement('montantTotalComission', ($compense->detailCompenses[0]->montant / $devise->courDevise));
             $userBalance->modificationUserId = Auth::user()->id;
             $userBalance->save();

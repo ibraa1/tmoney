@@ -24,9 +24,9 @@ return new class extends Migration
             $table->decimal('remise')->nullable();
             $table->enum('typeRemise', ['aucun', 'pourcentage', 'valeur'])->nullable();
             $table->unsignedBigInteger('paysId');
-            $table->decimal('montant');
+            $table->decimal('montant', 15, 3);
             $table->integer('code')->unique()->nullable();
-            $table->enum('statut', ['en attente', 'OK', 'annulé'])->nullable(); 
+            $table->enum('statut', ['en attente', 'OK', 'annulé'])->nullable();
             $table->unsignedBigInteger('clientId');
             $table->unsignedBigInteger('receveurId');
             $table->unsignedBigInteger('creationUserId');

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\TransactionRequest;
 use App\Models\Balance;
+use App\Models\DetailBalance;
 use App\Models\Devise;
 use App\Models\Pays;
 use App\Models\Transaction;
@@ -94,16 +95,34 @@ class TransactionController extends Controller
             'creationUserId' => Auth::user()->id,
             'modificationUserId' => Auth::user()->id,
         ]);
-
-        $userBalance = Balance::where('userId', Auth::user()->id)->first();
-        if ($userBalance && $userBalance->montant >= ($transaction->montant - $userBalance->montantTotalComission - $userBalance->commission)) {
+        $latestBalance = Auth::user()
+            ->balances()
+            ->latest('created_at')
+            ->first();
+        $userBalance = $latestBalance;
+        if ($userBalance && $userBalance->montant >= ($transaction->montant + $transaction->commission)) {
             // La balance existe et le solde est suffisant
             $transaction->save(); // Sauvegarde de la transaction
             $montantARetire = $transaction->montant + $transaction->commission;
-            $userBalance->decrement('montant', $montantARetire);
-            $userBalance->increment('montantTotalComission', $agentCommission);
-            $userBalance->modificationUserId = Auth::user()->id;
-            $userBalance->save();
+
+            $balance = new Balance([
+                'montant' => $userBalance->montant - $montantARetire,
+                'userId' =>  $userBalance->userId,
+                'montantTotalComission' => $userBalance->montantTotalComission + $agentCommission,
+                'creationUserId' => Auth::user()->id,
+                'modificationUserId' => Auth::user()->id,
+            ]);
+            $balance->save();
+
+            $detailBalance = new DetailBalance([
+                'balanceId' => $balance->id,
+                'deviseId' => $userBalance->detailBalance->deviseId,
+                'min' => $userBalance->detailBalance->min,
+                'max' => $userBalance->detailBalance->max,
+                'creationUserId' => Auth::user()->id,
+                'modificationUserId' => Auth::user()->id,
+            ]);
+            $detailBalance->save();
 
             // Mise à jour de la balance de l'admin
             $deviseEntreeTransaction = Devise::find($request->devise)->deviseEntree;
@@ -114,8 +133,6 @@ class TransactionController extends Controller
                     });
                 })
                 ->first();
-            // dd($adminBalance);
-
             if ($adminBalance) {
                 $tauxDeChange = $adminBalance->detailBalance->first()->devise->courDevise;
                 $adminBalance->increment('montant', $adminCommission * $tauxDeChange);
@@ -132,25 +149,42 @@ class TransactionController extends Controller
 
     public function cancel($id)
     {
+
         $transaction = Transaction::where('id', $id)->first();
+        $user = User::where('id', $transaction->agentId)->first();
+        $latestBalance = $user
+            ->balances()
+            ->latest('created_at')
+            ->first();
         // Vérifiez si la transaction peut être annulée (selon vos règles métier)
         if ($transaction->statut === 'en attente') {
             // Vérifiez si la balance de l'agent contient encore le montant de la transaction
-            $agentBalance = Balance::where('userId', $transaction->agentId)->first();
-            if ($agentBalance && $agentBalance->montant >= $transaction->montant) {
-                // Mettez à jour le statut de la transaction à "annulée"
+            $agentBalance = $latestBalance;
+            if ($agentBalance && $agentBalance->montant >= ($transaction->montant + $transaction->commission)) {
+
+
+
+                $balance = new Balance([
+                    'montant' =>   $agentBalance->montant + ($transaction->montant + $transaction->commission),
+                    'userId' =>  $agentBalance->userId,
+                    'montantTotalComission' => $agentBalance->montantTotalComission - $transaction->agentCommission,
+                    'creationUserId' => Auth::user()->id,
+                    'modificationUserId' => Auth::user()->id,
+                ]);
+                $balance->save();
+
+                $detailBalance = new DetailBalance([
+                    'balanceId' => $balance->id,
+                    'deviseId' => $agentBalance->detailBalance->deviseId,
+                    'min' => $agentBalance->detailBalance->min,
+                    'max' => $agentBalance->detailBalance->max,
+                    'creationUserId' => Auth::user()->id,
+                    'modificationUserId' => Auth::user()->id,
+                ]);
+                $detailBalance->save();
+
                 $transaction->statut = 'annulé';
                 $transaction->save();
-
-                $agentBalance->decrement(
-                    'montant',
-                    $transaction->montant
-                );
-
-                $agentBalance->decrement('montantTotalComission', $transaction->agentCommission);
-                $agentBalance->modificationUserId = Auth::user()->id;
-                $agentBalance->save();
-
 
                 // Mise à jour de la balance de l'admin pour l'annulation
                 $deviseEntreeTransaction = Devise::find($transaction->deviseId)->deviseEntree;

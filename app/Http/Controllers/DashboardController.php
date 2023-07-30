@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Balance;
 use App\Models\Transaction;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -48,29 +50,74 @@ class DashboardController extends Controller
         }
 
 
-        // Get all agents and their commissions
-        $agentsCommissions = User::where('role', 'agent')->get();
+        // Get the start and end dates of the current week
+        $currentWeekStart = Carbon::now()->startOfWeek();
+        $currentWeekEnd = Carbon::now()->endOfWeek();
 
-        // Initialize arrays for labels (noms) and values (montants)
+        // Initialize an array to hold the labels (days) and agent balances for each day
         $labelAgents = [];
-        $valuesBalances = [];
+        $agentBalancesByDay = [];
 
-        // Loop through each agent and add their name to the labels array
-        // and their balance (montant) to the values array
-        foreach ($agentsCommissions as $agent) {
-            // Access the name of the agent
-            $name = $agent->prenom . ' ' . $agent->nom;
+        // Loop through each day of the week
+        $currentDay = $currentWeekStart;
+        while ($currentDay <= $currentWeekEnd) {
+            // Get the balances for each agent for the current day
+            $agentBalances = [];
+            $agentsCommissions = User::where('role', 'agent')->get();
+            foreach ($agentsCommissions as $agent) {
+                // Get the name of the agent
+                $name = $agent->prenom . ' ' . $agent->nom;
 
-            // Access the balance (montant) of the agent
-            $balance = $agent->balances[0]->montant;
+                // Get the balance of the agent for the current day
+                $balance = $agent->balances()
+                    ->whereDate('created_at', $currentDay)
+                    ->latest()
+                    ->first();
 
-            // Add the name to the labels array
-            $labelAgents[] = $name;
+                // If the agent has a balance for the current day, store it, otherwise set it to 0
+                if ($balance) {
+                    $agentBalances[$name] = $balance->montant;
+                } else {
+                    $agentBalances[$name] = 0;
+                }
+            }
 
-            // Add the balance to the values array
-            $valuesBalances[] = $balance;
+            // Add the day label to the labels array
+            $labelAgents[] = $currentDay->format('l');
+
+            // Add the balances for the current day to the agentBalancesByDay array
+            $agentBalancesByDay[] = $agentBalances;
+
+            // Move to the next day
+            $currentDay->addDay();
         }
 
-        return view('welcome', compact('totalClients', 'totalTransactions', 'transactionsToday', 'totalAgents', 'labels', 'transactionCounts', 'labelAgents', 'valuesBalances'));
+        $apexChartData = [];
+
+        // Loop through each day of the week
+        for ($i = 0; $i < 7; $i++) {
+            // Get the balances for each agent for the current day
+            $agentBalances = $agentBalancesByDay[$i];
+
+            // Loop through each agent's balances and add them to the formatted data
+            foreach ($agentBalances as $agentName => $balance) {
+                // Check if the agent's data already exists in the formatted data array
+                if (isset($apexChartData[$agentName])) {
+                    // Agent's data already exists, add the balance to the existing data
+                    $apexChartData[$agentName]['data'][] = $balance;
+                } else {
+                    // Agent's data does not exist, create a new data entry for the agent
+                    $apexChartData[$agentName] = [
+                        'name' => $agentName,
+                        'data' => [$balance],
+                    ];
+                }
+            }
+        }
+
+        // dd($apexChartData);
+
+
+        return view('welcome', compact('totalClients', 'totalTransactions', 'transactionsToday', 'totalAgents', 'labels', 'transactionCounts', 'labelAgents', 'apexChartData'));
     }
 }

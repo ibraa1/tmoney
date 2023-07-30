@@ -39,6 +39,34 @@
                 <div class="card">
                     <!-- .card-header -->
                     <div class="card-header">
+                        <h6 class="">
+                            Balance :
+                            @php
+                                $latestBalance = Auth::user()
+                                    ->balances()
+                                    ->latest('created_at')
+                                    ->first();
+                            @endphp
+
+                            @if ($latestBalance)
+                                {{ number_format($latestBalance->montant, 2, ',', ' ') }}
+                                {{ $latestBalance->detailBalance->devise->deviseEntree }}
+                            @endif
+                        </h6>
+                        <h6 class="">
+                            Commision totale :
+                            @php
+                                $latestBalance = Auth::user()
+                                    ->balances()
+                                    ->latest('created_at')
+                                    ->first();
+                            @endphp
+
+                            @if ($latestBalance)
+                                {{ number_format($latestBalance->montantTotalComission, 2, ',', ' ') }}
+                                {{ $latestBalance->detailBalance->devise->deviseEntree }}
+                            @endif
+                        </h6>
                         <!-- .steps -->
                         <div class="steps steps-" role="tablist">
                             <ul>

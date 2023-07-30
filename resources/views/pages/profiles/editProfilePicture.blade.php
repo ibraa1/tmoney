@@ -32,10 +32,24 @@
 
         </div><!-- .cover-controls -->
         <div class="cover-controls cover-controls-bottom">
-            <div style="background-color: gainsboro">Balances: <br>
-                @foreach (Auth::user()->balances as $balance)
-                    {{ $balance->montant }} {{ $balance->detailBalance->devise->deviseEntree }}<br>
-                @endforeach
+            <div style="color:blueviolet">Balances: <br>
+                @if (Auth::user()->role == 'agent')
+                    @php
+                        $latestBalance = Auth::user()
+                            ->balances()
+                            ->latest('created_at')
+                            ->first();
+                    @endphp
+
+                    @if ($latestBalance)
+                        {{ number_format($latestBalance->montant + $latestBalance->montantTotalComission, 2, ',', ' ') }}
+                        {{ $latestBalance->detailBalance->devise->deviseEntree }}
+                    @endif
+                @else
+                    @foreach (Auth::user()->balances as $balance)
+                        {{ $balance->montant }} {{ $balance->detailBalance->devise->deviseEntree }}<br>
+                    @endforeach
+                @endif
             </div>
         </div><!-- /.cover-controls -->
     </header><!-- /.page-cover -->

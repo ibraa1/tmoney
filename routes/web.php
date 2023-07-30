@@ -14,6 +14,7 @@ use App\Http\Controllers\RetraitController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VilleController;
+use App\Http\Middleware\CloseAppDuringNight;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -27,7 +28,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware(['auth'])->group(
+Route::middleware(['auth', 'close.app.during.night'])->group(
     function () {
         Route::get('/', [DashboardController::class, 'index'])->name('home');
         Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
@@ -91,10 +92,10 @@ Route::middleware(['auth'])->group(
 );
 
 
-Route::middleware(['guest'])->group(
+Route::middleware(['guest', 'close.app.during.night'])->group(
     function () {
         // les routes pour auth
-        Route::get('login', [AuthController::class, 'index'])->name('getLogin');
+        Route::get('login', [AuthController::class, 'index'])->name('getLogin')->middleware(CloseAppDuringNight::class);
         Route::post('login', [AuthController::class, 'login'])->name('login');
         Route::get('/reload-captcha', [AuthController::class, 'reloadCaptcha']);
 

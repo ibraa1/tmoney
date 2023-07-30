@@ -18,19 +18,17 @@ class BalanceController extends Controller
     public function index()
     {
         if (Auth::user()->role === 'admin' || Auth::user()->role === 'superAdmin') {
-            $balances = Balance::orderBy('montant')
+            $users = User::where('role', '!=', 'client')
+                ->orderBy('nom')
                 ->withTrashed()
-                ->get()
-                ->load('detailBalance');
+                ->get();
         } else {
-            $balances = Balance::where('userId', Auth::user()->id)
-                ->orderBy('montant')
+            $users = User::where('id', Auth::user()->id)
                 ->withTrashed()
-                ->get()
-                ->load('detailBalance');
+                ->get();
         }
 
-        return view('pages.balances.index', compact('balances'));
+        return view('pages.balances.index', compact('users'));
     }
 
     /**

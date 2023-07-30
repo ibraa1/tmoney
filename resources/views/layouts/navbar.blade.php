@@ -33,10 +33,18 @@
                     <!-- Modified class added here -->
                     <span class="balance">
                         <!-- Added the balance class here -->
-                        Balance: @foreach (Auth::user()->balances as $balance)
-                            {{ number_format($balance->montant, 2, ',', ' ') }}
-                            {{ $balance->detailBalance->devise->deviseEntree }}<br>
-                        @endforeach
+                        Balance:
+                        @php
+                            $latestBalance = Auth::user()
+                                ->balances()
+                                ->latest('created_at')
+                                ->first();
+                        @endphp
+
+                        @if ($latestBalance)
+                            {{ number_format($latestBalance->montant + $latestBalance->montantTotalComission, 2, ',', ' ') }}
+                            {{ $latestBalance->detailBalance->devise->deviseEntree }}
+                        @endif
                     </span>
                 </div>
             @endif

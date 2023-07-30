@@ -27,10 +27,35 @@
                 <!-- .card -->
                 <div class="card card-fluid">
                     <div class="card-header">
-                        <h6 class=""> Balance : {{ Auth::user()->balances[0]->montant }}
-                            {{ Auth::user()->balances[0]->detailBalance->devise->deviseEntree }} </h6>
-                        <h6 class=""> Commision totale : {{ Auth::user()->balances[0]->montantTotalComission }}
-                            {{ Auth::user()->balances[0]->detailBalance->devise->deviseEntree }} </h6>
+                        <h6 class="">
+                            Balance :
+                            @php
+                                $latestBalance = Auth::user()
+                                    ->balances()
+                                    ->latest('created_at')
+                                    ->first();
+                            @endphp
+
+                            @if ($latestBalance)
+                                {{ number_format($latestBalance->montant, 2, ',', ' ') }}
+                                {{ $latestBalance->detailBalance->devise->deviseEntree }}
+                            @endif
+                        </h6>
+                        <h6 class="">
+                            Commision totale :
+                            @php
+                                $latestBalance = Auth::user()
+                                    ->balances()
+                                    ->latest('created_at')
+                                    ->first();
+                            @endphp
+
+                            @if ($latestBalance)
+                                {{ number_format($latestBalance->montantTotalComission, 2, ',', ' ') }}
+                                {{ $latestBalance->detailBalance->devise->deviseEntree }}
+                            @endif
+                        </h6>
+
                     </div>
                     <!-- .card-body -->
                     <div class="card-body">
@@ -80,7 +105,7 @@
                                         data-live-search="true" data-width="100%">
                                         <option value="">Sélectionner un type</option>
                                         <option value="retraitBalance">Retrait Balance</option>
-                                         <option value="transfertBalance">Transfert Balance</option>
+                                        <option value="transfertBalance">Transfert Balance</option>
                                         <option value="commission">Commission</option>
                                     </select>
                                     @error('type')

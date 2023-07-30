@@ -17,8 +17,12 @@ class DeviseController extends Controller
 
     public function devises()
     {
+        $latestBalance = Auth::user()
+            ->balances()
+            ->latest('created_at')
+            ->first();
         $devises = Devise::whereNull('dateFin')
-            ->where('deviseEntree', Auth::user()->balances[0]->detailBalance->devise->deviseEntree)
+            ->where('deviseEntree', $latestBalance->detailBalance->devise->deviseEntree)
             ->get();
         return response()->json($devises);
     }

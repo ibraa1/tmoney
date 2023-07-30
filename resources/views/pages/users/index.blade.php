@@ -85,7 +85,7 @@
                             <th> Nom Complet </th>
                             <th> Telephone </th>
                             <th> Role </th>
-                            <th> Balance </th>
+                            <th> Solde Total </th>
                             <th> Actions </th>
 
                         </tr>
@@ -102,10 +102,24 @@
                                 <td>{{ $user->numero_tel }}</td>
                                 <td>{{ $user->role }}</td>
                                 <td>
-                                    @foreach ($user->balances as $balance)
-                                        {{ $balance->montant }} {{ $balance->detailBalance->devise->deviseEntree }}<br>
-                                    @endforeach
+                                    @if ($user->role == 'agent')
+                                        @php
+                                            $latestBalance = $user
+                                                ->balances()
+                                                ->latest('created_at')
+                                                ->first();
+                                        @endphp
 
+                                        @if ($latestBalance)
+                                            {{ number_format($latestBalance->montant + $latestBalance->montantTotalComission, 2, ',', ' ') }}
+                                            {{ $latestBalance->detailBalance->devise->deviseEntree }}
+                                        @endif
+                                    @else
+                                        @foreach ($user->balances as $balance)
+                                            {{ $balance->montant }}
+                                            {{ $balance->detailBalance->devise->deviseEntree }}<br>
+                                        @endforeach
+                                    @endif
                                 </td>
                                 <td>
                                     @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superAdmin')
@@ -116,10 +130,12 @@
                                                     href="{{ route('users.edit', $user->id) }}">
                                                     <i class="fa fa-pencil-alt"></i>
                                                 </a>
-                                                <a class="btn btn-sm btn-icon btn-secondary"
-                                                    href="{{ route('balance', $user->id) }}">
-                                                    <i class="fa fa-plus"></i>
-                                                </a>
+                                                @if ($user->role == 'admin')
+                                                    <a class="btn btn-sm btn-icon btn-secondary"
+                                                        href="{{ route('balance', $user->id) }}">
+                                                        <i class="fa fa-wallet"></i>
+                                                    </a>
+                                                @endif
                                             @endif
 
                                             @if (!$user->deleted_at)

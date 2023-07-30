@@ -18,7 +18,7 @@ class ProfileController extends Controller
         $countries = Pays::all();
         $villes = Ville::all();
         $user = User::find($id);
-        // dd($user->balances[0]->detailBalance->devise->deviseEntree);
+
         if (!$user) {
             return redirect()->route('/')->with('error', 'L\'utilisateur n\'existe pas.');
         }

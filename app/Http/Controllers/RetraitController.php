@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\RetraitRequest;
 use App\Models\Balance;
+use App\Models\DetailBalance;
 use App\Models\Devise;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
@@ -37,21 +38,25 @@ class RetraitController extends Controller
             ->first();
 
         if ($transfertTransaction) {
+            $latestBalance = Auth::user()
+                ->balances()
+                ->latest('created_at')
+                ->first();
             // Récupérer les devises de la transaction et de la balance de l'utilisateur
             $deviseTransfert = Devise::find($request->devise)->deviseSortie;
-            $deviseBalance = Auth::user()->balances[0]->detailBalance->devise->deviseEntree;
+            $deviseBalance = $latestBalance->detailBalance->devise->deviseEntree;
 
-            $userBalance = Balance::where('userId', Auth::user()->id)->first();
+            $userBalance = $latestBalance;
             $maxAllowedBalance = $userBalance->detailBalance->max;
-            if ($userBalance->montant + $request->montant > $maxAllowedBalance) {
-                return redirect()->back()->with('error', 'Le montant du retrait dépasse le solde maximum autorisé.');
-            }
+            // if ($userBalance->montant + $request->montant > $maxAllowedBalance) {
+            //     return redirect()->back()->with('error', 'Le montant du retrait dépasse le solde maximum autorisé.');
+            // }
 
             if ($deviseTransfert === $deviseBalance) {
                 // Calcul de la commission du retraitant
                 $retraitantCommission = $transfertTransaction->retraitantCommission;
 
-                $deviseEntreeAgent = Auth::user()->balances[0]->detailBalance->devise->deviseEntree;
+                $deviseEntreeAgent = $latestBalance->detailBalance->devise->deviseEntree;
                 $deviseEntreeTransaction = Devise::find($request->devise)->deviseEntree;
                 $devise = Devise::where('deviseEntree', $deviseEntreeTransaction)
                     ->where('deviseSortie', $deviseEntreeAgent)
@@ -59,7 +64,7 @@ class RetraitController extends Controller
                 if ($devise) {
                     $tauxDeChange = $devise->courDevise;
                     $commissionAgent = $retraitantCommission * $tauxDeChange;
-                    $userBalance = Balance::where('userId', Auth::user()->id)->first();
+                    $userBalance = $latestBalance;
                 } else {
                     return redirect()->back()->with('error', 'Erreur, aucun taux de change trouvé contactez l\'admin pour votre commission.');
                 }
@@ -93,18 +98,32 @@ class RetraitController extends Controller
         $transfertTransaction->statut = 'OK';
         $transfertTransaction->save();
 
-        $userBalance = Balance::where('userId', Auth::user()->id)->first();
+        $userBalance = $latestBalance;
 
         if ($userBalance) {
             // La balance existe, mise à jour du montant
-            $userBalance->increment('montant', $transaction->montant);
-            $userBalance->increment('montantTotalComission', $commissionAgent);
-            $userBalance->modificationUserId = Auth::user()->id;
-            $userBalance->save();
+            $balance = new Balance([
+                'montant' =>  $userBalance->montant + $transaction->montant,
+                'userId' =>  $userBalance->userId,
+                'montantTotalComission' => $userBalance->montantTotalComission + $commissionAgent,
+                'creationUserId' => Auth::user()->id,
+                'modificationUserId' => Auth::user()->id,
+            ]);
+            $balance->save();
+
+            $detailBalance = new DetailBalance([
+                'balanceId' => $balance->id,
+                'deviseId' => $userBalance->detailBalance->deviseId,
+                'min' => $userBalance->detailBalance->min,
+                'max' => $userBalance->detailBalance->max,
+                'creationUserId' => Auth::user()->id,
+                'modificationUserId' => Auth::user()->id,
+            ]);
+            $detailBalance->save();
         }
 
         // Vérification de la mise à jour de la balance de l'utilisateur
-        if (!$userBalance || !$userBalance->save()) {
+        if (!$balance || !$balance->save()) {
             // Gérer l'erreur
             return redirect()->back()->with('error', 'Erreur lors de la mise à jour de la balance.');
         }

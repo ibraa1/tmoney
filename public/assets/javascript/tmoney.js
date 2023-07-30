@@ -259,7 +259,7 @@ $(document).ready(function() {
                 success: function(response) {
                     console.log(response);
                      if (response == null || Object.keys(response).length === 0) {
-                        alert('Le code est invalid veuillez verifier.');
+                        alert('Le code a déja été utiliser, veuillez verifier.');
                          $('#submitButton').prop('disabled', false);
                         $('#btnTexte').text('Rechercher');
                         $('.spinner-border').addClass('d-none');

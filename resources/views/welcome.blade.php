@@ -10,10 +10,19 @@
             </p>
             @if (Auth::user()->role == 'agent')
                 <div class="ml-auto">
-                    <p>Solde: @foreach (Auth::user()->balances as $balance)
-                            {{ number_format($balance->montant, 2, ',', ' ') }}
-                            {{ $balance->detailBalance->devise->deviseEntree }}<br>
-                        @endforeach
+                    <p>Solde:
+                        @php
+                            $latestBalance = Auth::user()
+                                ->balances()
+                                ->latest('created_at')
+                                ->first();
+                            // dd($latestBalance);
+                        @endphp
+
+                        @if ($latestBalance)
+                            {{ number_format($latestBalance->montant + $latestBalance->montantTotalComission, 2, ',', ' ') }}
+                            {{ $latestBalance->detailBalance->devise->deviseEntree }}
+                        @endif
                     </p>
                 </div>
             @endif
@@ -157,7 +166,7 @@
 
 
             $("#balances").empty();
-            var colors = ["#39af1"],
+            var colors = ["#39af1", "#f1f3fa"],
                 dataColors = $("#balances").data("colors");
             dataColors && (colors = dataColors.split(","));
             var options = {
@@ -170,16 +179,13 @@
                     },
                     plotOptions: {
                         bar: {
-                            vertical: !0
+                            horizontal: !0
                         }
                     },
                     dataLabels: {
                         enabled: !0
                     },
-                    series: [{
-                        name: "balances",
-                        data: @json($valuesBalances),
-                    }, ],
+                    series: @json(array_values($apexChartData)),
                     colors: colors,
                     xaxis: {
                         categories: @json($labelAgents),

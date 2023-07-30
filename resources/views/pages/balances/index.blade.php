@@ -91,59 +91,143 @@
                     <!-- tbody -->
                     <tbody>
                         <!-- create empty row to passing html validator -->
-                        @foreach ($balances as $balance)
+                        @foreach ($users as $user)
                             <tr>
-                                <td>{{ $balance->user->prenom }} {{ $balance->user->nom }}</td>
-                                <td>{{ $balance->detailBalance->min }} {{ $balance->detailBalance->devise->deviseEntree }}
+                                <td>{{ $user->prenom }} {{ $user->nom }}</td>
+                                <td>
+                                    @if ($user->role == 'agent')
+                                        @php
+                                            $latestBalance = $user
+                                                ->balances()
+                                                ->latest('created_at')
+                                                ->first();
+                                        @endphp
+
+                                        @if ($latestBalance)
+                                            {{ number_format($latestBalance->detailBalance->min, 2, ',', ' ') }}
+                                            {{ $latestBalance->detailBalance->devise->deviseEntree }}
+                                        @endif
+                                    @else
+                                        @foreach ($user->balances as $balance)
+                                            {{ $balance->detailBalance->min }}
+                                            {{ $balance->detailBalance->devise->deviseEntree }}<br>
+                                        @endforeach
+                                    @endif
                                 </td>
-                                <td>{{ $balance->detailBalance->max }} {{ $balance->detailBalance->devise->deviseEntree }}
+                                <td>
+                                    @if ($user->role == 'agent')
+                                        @php
+                                            $latestBalance = $user
+                                                ->balances()
+                                                ->latest('created_at')
+                                                ->first();
+                                        @endphp
+
+                                        @if ($latestBalance)
+                                            {{ number_format($latestBalance->detailBalance->max, 2, ',', ' ') }}
+                                            {{ $latestBalance->detailBalance->devise->deviseEntree }}
+                                        @endif
+                                    @else
+                                        @foreach ($user->balances as $balance)
+                                            {{ $balance->detailBalance->max }}
+                                            {{ $balance->detailBalance->devise->deviseEntree }}
+                                            <br>
+                                        @endforeach
+                                    @endif
                                 </td>
-                                <td>{{ $balance->montant }} {{ $balance->detailBalance->devise->deviseEntree }}</td>
-                                <td>{{ $balance->montantTotalComission }}
-                                    {{ $balance->detailBalance->devise->deviseEntree }}</td>
+
+                                <td>
+                                    @if ($user->role == 'agent')
+                                        @php
+                                            $latestBalance = $user
+                                                ->balances()
+                                                ->latest('created_at')
+                                                ->first();
+                                        @endphp
+
+                                        @if ($latestBalance)
+                                            {{ number_format($latestBalance->montant, 2, ',', ' ') }}
+                                            {{ $latestBalance->detailBalance->devise->deviseEntree }}
+                                        @endif
+                                    @else
+                                        @foreach ($user->balances as $balance)
+                                            {{ $balance->montant }}
+                                            {{ $balance->detailBalance->devise->deviseEntree }}<br>
+                                        @endforeach
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($user->role == 'agent')
+                                        @php
+                                            $latestBalance = $user
+                                                ->balances()
+                                                ->latest('created_at')
+                                                ->first();
+                                        @endphp
+
+                                        @if ($latestBalance)
+                                            {{ number_format($latestBalance->montantTotalComission, 2, ',', ' ') }}
+                                            {{ $latestBalance->detailBalance->devise->deviseEntree }}
+                                        @endif
+                                    @else
+                                        @foreach ($user->balances as $balance)
+                                            {{ $balance->montantTotalComission }}
+                                            {{ $balance->detailBalance->devise->deviseEntree }}<br>
+                                        @endforeach
+                                    @endif
+                                </td>
                                 <td>
                                     @if (Auth::user()->role == 'admin' || Auth::user()->role == 'superAdmin')
-                                        <div class="d-flex justify-content-between">
-                                            @if ($balance->deleted_at)
-                                            @else
-                                                <a class="btn btn-sm btn-icon btn-secondary"
-                                                    href="{{ route('balances.edit', $balance->id) }}">
-                                                    <i class="fa fa-pencil-alt"></i>
-                                                </a>
-                                            @endif
+                                        @php
+                                            $latestBalance = $user
+                                                ->balances()
+                                                ->latest('created_at')
+                                                ->first();
+                                        @endphp
+                                        @if ($user->role != 'admin')
+                                            <div class="d-flex justify-content-between">
+                                                @if ($latestBalance->deleted_at)
+                                                @else
+                                                    <a class="btn btn-sm btn-icon btn-secondary"
+                                                        href="{{ route('balances.edit', $latestBalance->id) }}">
+                                                        <i class="fa fa-pencil-alt"></i>
+                                                    </a>
+                                                @endif
 
-                                            @if (!$balance->deleted_at)
-                                                <form id="" action="{{ route('balances.destroy', $balance->id) }}"
-                                                    method="post">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button title="Supprimer"
-                                                        onclick="return confirm('Voulez vous vraiment supprimer cette ligne')"
-                                                        class="btn btn-sm btn-icon btn-secondary" href="#">
-                                                        <i class="far fa-trash-alt"></i>
-                                                    </button>
-                                                </form>
-                                            @else
-                                                <form action="{{ route('balances.restore', $balance->id) }}"
-                                                    method="post">
-                                                    @csrf
-                                                    @method('PUT')
-                                                    <button title="Restaurer"
-                                                        onclick="return confirm('Voulez vous vraiment restaurer cette ligne')"
-                                                        class="btn btn-sm btn-icon btn-secondary" href="#">
-                                                        <i class="far fa-undo"></i>
-                                                    </button>
-                                                </form>
-                                            @endif
+                                                @if (!$latestBalance->deleted_at)
+                                                    <form id=""
+                                                        action="{{ route('balances.destroy', $latestBalance->id) }}"
+                                                        method="post">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button title="Supprimer"
+                                                            onclick="return confirm('Voulez vous vraiment supprimer cette ligne')"
+                                                            class="btn btn-sm btn-icon btn-secondary" href="#">
+                                                            <i class="far fa-trash-alt"></i>
+                                                        </button>
+                                                    </form>
+                                                @else
+                                                    <form action="{{ route('balances.restore', $latestBalance->id) }}"
+                                                        method="post">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <button title="Restaurer"
+                                                            onclick="return confirm('Voulez vous vraiment restaurer cette ligne')"
+                                                            class="btn btn-sm btn-icon btn-secondary" href="#">
+                                                            <i class="far fa-undo"></i>
+                                                        </button>
+                                                    </form>
+                                                @endif
+                                            </div>
+                                        @endif
                                     @endif
-            </div>
-            </td>
-            </tr>
-            @endforeach
+                                </td>
+                            </tr>
+                        @endforeach
 
-            </tbody><!-- /tbody -->
-            </table><!-- /.table -->
-        </div><!-- /.card-body -->
-    </div><!-- /.card -->
+                    </tbody><!-- /tbody -->
+                </table><!-- /.table -->
+            </div><!-- /.card-body -->
+        </div><!-- /.card -->
     </div><!-- /.page-section -->
 @endsection
