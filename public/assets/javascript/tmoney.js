@@ -114,7 +114,6 @@ $(document).ready(function() {
     }
   });
 
-  // Reste du code de votre application...
 });
 
 $(document).ready(function() {
@@ -139,7 +138,7 @@ $(document).ready(function() {
 
                         // Ajouter une option pour chaque devise
                         devises.forEach(function(devise) {
-                            var option = $('<option></option>').attr('value', devise.id).text(devise.deviseEntree + ' vers ' + devise.deviseSortie);
+                            var option = $('<option></option>').attr('value', devise.id).attr('id','deviseSelect').text(devise.deviseEntree + ' vers ' + devise.deviseSortie);
                              if (devise.deviseEntree === deviseEntree && devise.deviseSortie === deviseSortie) {
                                     option.attr('selected', 'selected');
                             }
@@ -355,7 +354,52 @@ function getCommission(montant, devise) {
 }
 
 
+$(document).ready(function() {
+  var clientInfo = '';
+  var destinataireInfo = '';
+  var montant;
+  var deviseSelect;
+  var devise;
 
+  // Fonction appelée lorsque l'utilisateur clique sur un nom
+  $('.list-group-item').click(function() {
+
+    if ($(this).attr('id') === '1') {
+        clientInfo = $(this).attr('name');
+    } else if ($(this).attr('id') === '2') {
+        destinataireInfo = $(this).attr('name');
+    }
+
+    $('.list-group-item').click(function() {
+    var nameId = $(this).attr('data-id');
+
+    if ($(this).attr('id') === '1') {
+      clientId = nameId;
+      $('#clientId').val(clientId);
+    } else if ($(this).attr('id') === '2') {
+      receveurId = nameId;
+      $('#receveurId').val(receveurId);
+    }
+  });
+
+  });
+  $('#nextStep').click(function() {
+        $('#montantConfirme').empty();
+        $('#client').empty();
+        $('#destinataire').empty();
+    montant = $('#montant').val();
+    deviseSelect =  $('#deviseSelect').val();
+    $.post("/getDevise", { deviseId: deviseSelect },
+    function (response) {
+        devise = response.deviseEntree;
+            $('#montantConfirme').append(montant + " " + devise);
+            $('#client').append(clientInfo);
+            $('#destinataire').append(destinataireInfo);
+    });
+  });
+
+
+});
 
 
 function sendAlert() {

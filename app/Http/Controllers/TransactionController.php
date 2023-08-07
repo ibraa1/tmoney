@@ -188,7 +188,7 @@ class TransactionController extends Controller
 
                 // Mise à jour de la balance de l'admin pour l'annulation
                 $deviseEntreeTransaction = Devise::find($transaction->deviseId)->deviseEntree;
-                $adminBalance = Balance::where('userId', 1)
+                $adminBalance = Balance::where('userId', 6)
                     ->whereHas('detailBalance', function ($query) use ($deviseEntreeTransaction) {
                         $query->whereHas('devise', function ($subquery) use ($deviseEntreeTransaction) {
                             $subquery->where('deviseEntree', $deviseEntreeTransaction);

@@ -78,6 +78,8 @@ Route::middleware(['auth', 'close.app.during.night'])->group(
 
         Route::post('/getDevises', [DeviseController::class, 'devises'])->name('getDevises');
 
+        Route::post('/getDevise', [DeviseController::class, 'devise'])->name('getDevise');
+
 
         Route::post('/addClient', [ClientController::class, 'addClient'])->name('addClient');
         Route::post('/getReceiverPays', [ClientController::class, 'getReceiverPays'])->name('getReceiverPays');

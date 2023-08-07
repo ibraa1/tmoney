@@ -136,7 +136,8 @@
                                             data-toggle="radiolist">
                                             @foreach ($clients as $client)
                                                 <div class="list-group-item" id="1" data-toggle="sidebar"
-                                                    data-sidebar="show" data-id="{{ $client->id }}">
+                                                    data-sidebar="show" name="{{ $client->nom }} {{ $client->prenom }}"
+                                                    data-id="{{ $client->id }}">
                                                     <a href="#" class="stretched-link"></a>
                                                     <div class="list-group-item-figure">
                                                         <div class="tile tile-circle bg-indigo">
@@ -144,7 +145,8 @@
                                                         </div>
                                                     </div>
                                                     <div class="list-group-item-body">
-                                                        <h4 class="list-group-item-title">{{ $client->prenom }}
+                                                        <h4 id="clientInfo" class="list-group-item-title">
+                                                            {{ $client->prenom }}
                                                             {{ $client->nom }} ({{ $client->numero_tel }})</h4>
                                                         <p class="list-group-item-text">{{ $client->ville->nom }},
                                                             {{ $client->pays->nom }}</p>
@@ -198,7 +200,8 @@
                                             data-toggle="radiolist">
                                             @foreach ($clients as $client)
                                                 <div class="list-group-item" id="2" data-toggle="sidebar"
-                                                    data-sidebar="show" data-id="{{ $client->id }}">
+                                                    data-sidebar="show" name="{{ $client->nom }} {{ $client->prenom }}"
+                                                    data-id="{{ $client->id }}">
                                                     <a href="#" class="stretched-link"></a>
                                                     <div class="list-group-item-figure">
                                                         <div class="tile tile-circle bg-indigo">
@@ -206,7 +209,8 @@
                                                         </div>
                                                     </div>
                                                     <div class="list-group-item-body">
-                                                        <h4 class="list-group-item-title">{{ $client->prenom }}
+                                                        <h4 id="destinataireInfo" class="list-group-item-title">
+                                                            {{ $client->prenom }}
                                                             {{ $client->nom }} ({{ $client->numero_tel }})</h4>
                                                         <p class="list-group-item-text">{{ $client->ville->nom }},
                                                             {{ $client->pays->nom }}</p>
@@ -318,8 +322,8 @@
                                     </div><!-- /form row -->
                                     <hr class="mt-5">
                                     <div class="d-flex">
-                                        <button type="button" class="prev btn btn-secondary">Précédent</button> <button
-                                            type="button" class="next btn btn-primary ml-auto"
+                                        <button type="button" class="prev btn btn-secondary">Précédent</button>
+                                        <button type="button" id="nextStep" class="next btn btn-primary ml-auto"
                                             data-validate="fieldset03">Suivant</button>
                                     </div>
                                 </fieldset><!-- /fieldset -->
@@ -332,16 +336,14 @@
                                     <div class="card bg-light">
                                         <div class="card-body overflow-auto" style="height: 140px">
                                             <p> Nous tenons à vous informer qu'une transaction a été initiée sur votre
-                                                compte. Veuillez prendre note que cette opération est irréversible et
-                                                qu'elle entraînera un transfert de fonds définitif.
+                                                compte.
+                                                Vous êtes sur le point de transférer <span style="color: blue"
+                                                    id="montantConfirme"></span> de
+                                                la
+                                                part de <span style="color: blue" id="client"></span> vers <span
+                                                    style="color: blue" id="destinataire"></span>
                                                 Nous vous prions de bien vouloir confirmer cette transaction en cliquant sur
                                                 la case à cocher à la fin de ce message.
-                                                Nous tenons à souligner qu'une fois la transaction confirmée, les fonds
-                                                seront transférés et l'opération ne pourra pas être annulée. Il est donc
-                                                essentiel de vérifier attentivement toutes les informations avant de
-                                                procéder à la confirmation.
-
-                                                Nous vous remercions de votre attention et de votre confiance.
                                             </p>
                                         </div>
                                     </div><!-- /.card -->

@@ -27,6 +27,13 @@ class DeviseController extends Controller
         return response()->json($devises);
     }
 
+    public function devise(Request $request)
+    {
+        $devise = Devise::where('id', $request->deviseId)
+            ->get();
+        return response()->json($devise[0]);
+    }
+
     /**
      * Show the form for creating a new resource.
      */
