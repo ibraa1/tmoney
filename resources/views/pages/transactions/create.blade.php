@@ -341,7 +341,8 @@
                                                     id="montantConfirme"></span> de
                                                 la
                                                 part de <span style="color: blue" id="client"></span> vers <span
-                                                    style="color: blue" id="destinataire"></span>
+                                                    style="color: blue" id="destinataire"></span>, la comission sera de :
+                                                <span style="color: blue" id="comission"></span>
                                                 Nous vous prions de bien vouloir confirmer cette transaction en cliquant sur
                                                 la case à cocher à la fin de ce message.
                                             </p>

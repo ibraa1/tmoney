@@ -387,7 +387,9 @@ $(document).ready(function() {
         $('#montantConfirme').empty();
         $('#client').empty();
         $('#destinataire').empty();
+        $('#comission').empty();
     montant = $('#montant').val();
+    comission = $('#commission').val();
     deviseSelect =  $('#deviseSelect').val();
     $.post("/getDevise", { deviseId: deviseSelect },
     function (response) {
@@ -395,6 +397,7 @@ $(document).ready(function() {
             $('#montantConfirme').append(montant + " " + devise);
             $('#client').append(clientInfo);
             $('#destinataire').append(destinataireInfo);
+            $('#comission').append(comission + " " + devise);
     });
   });
 
