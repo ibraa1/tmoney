@@ -141,26 +141,26 @@
                                         @endif
                                     @endif
 
-                                    @if (Auth::user()->role == 'admin')
-                                        <div class="d-flex justify-content-between">
 
-                                            @if ($transaction->deleted_at)
-                                            @else
-                                                @if ($transaction->statut == 'en attente')
-                                                    <form id=""
-                                                        action="{{ route('transactions.cancel', $transaction->id) }}"
-                                                        method="post">
-                                                        @csrf
-                                                        <button class="btn btn-sm btn-icon btn-secondary"
-                                                            onclick="return confirm('Voulez vous vraiment annulé cette transaction ?')"
-                                                            title="Annulé">
-                                                            <i class="fa fa-ban"></i>
-                                                        </button>
-                                                    </form>
-                                                @endif
+                                    <div class="d-flex justify-content-between">
+
+                                        @if ($transaction->deleted_at)
+                                        @else
+                                            @if ($transaction->statut == 'en attente')
+                                                <form id=""
+                                                    action="{{ route('transactions.cancel', $transaction->id) }}"
+                                                    method="post">
+                                                    @csrf
+                                                    <button class="btn btn-sm btn-icon btn-secondary"
+                                                        onclick="return confirm('Voulez vous vraiment annulé cette transaction ?')"
+                                                        title="Annulé">
+                                                        <i class="fa fa-ban"></i>
+                                                    </button>
+                                                </form>
                                             @endif
+                                        @endif
 
-
+                                        @if (Auth::user()->role == 'admin')
                                             @if (!$transaction->deleted_at)
                                                 <form id=""
                                                     action="{{ route('transactions.destroy', $transaction->id) }}"
@@ -185,11 +185,11 @@
                                                     </button>
                                                 </form>
                                             @endif
-                                        </div>
-                                    @endif
-                                </td>
+                                    </div>
+                        @endif
+                        </td>
 
-                            </tr>
+                        </tr>
                         @endforeach
                     </tbody><!-- /tbody -->
                 </table><!-- /.table -->
